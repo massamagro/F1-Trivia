@@ -10,11 +10,11 @@ import com.vozmediano.f1trivia.data.network.model.DriversResponse
 
 @Dao
 interface DriverDao {
-    @Query("SELECT * FROM drivers WHERE driver_number = :driverNumber")
-    suspend fun getDriver(driverNumber: Int): List<DriverEntity>
+    @Query("SELECT * FROM drivers WHERE driverId = :driverId")
+    suspend fun getDriver(driverId: String): DriverEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(drivers: DriverEntity)
+    suspend fun insertAll(drivers: List<DriverEntity>)
 
     @Query("DELETE FROM drivers")
     suspend fun clearAll()
