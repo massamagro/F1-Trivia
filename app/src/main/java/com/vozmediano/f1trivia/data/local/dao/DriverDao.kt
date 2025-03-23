@@ -13,6 +13,9 @@ interface DriverDao {
     @Query("SELECT * FROM drivers WHERE driverId = :driverId")
     suspend fun getDriver(driverId: String): DriverEntity
 
+    @Query("SELECT * FROM drivers")
+    suspend fun getDrivers(): List<DriverEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(drivers: List<DriverEntity>)
 

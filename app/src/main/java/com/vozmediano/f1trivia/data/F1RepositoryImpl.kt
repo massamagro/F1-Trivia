@@ -11,8 +11,20 @@ class F1RepositoryImpl(
     private val driverDao: DriverDao
 
 ) : F1Repository {
-    override suspend fun getDrivers(driverId: String): List<Driver> {
-        TODO("Not yet implemented")
+    override suspend fun getDrivers(): List<Driver> {
+        return try{
+            val cachedDrivers = driverDao.getDrivers().map { it.toDomain() }
+            cachedDrivers
+        } catch (e: Exception){
+            val driversResponse =
+                f1Service
+                    .getDrivers()
+                    .DriverTable
+                    .Drivers
+                    .map { it.toDomain() }
+            driverDao.insertAll(driversResponse.map { it.toDatabase() })
+            driversResponse
+        }
     }
 
     override suspend fun getDriver(driverId: String): Driver {

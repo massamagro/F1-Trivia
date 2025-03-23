@@ -10,4 +10,8 @@ interface F1Service {
     suspend fun getDriver(
         @Query("driverId") driverId: String
     ): MRDataResponse
+
+    @GET("/2024/drivers")
+    suspend fun getDrivers(
+    ): MRDataResponse
 }
