@@ -20,6 +20,6 @@ interface DriverDao {
     suspend fun clearAll()
 
     @Upsert
-    suspend fun upsertAll(drivers: List<DriversResponse>)
+    suspend fun upsertAll(drivers: List<DriverEntity>)
 
 }

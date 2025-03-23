@@ -26,6 +26,7 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
                 Log.i("Tests", "Driver: $driver")
             } catch (e: Exception) {
                 Log.i("Tests", "error fetching")
+                Log.i("Tests", e.toString())
             }
         }
     }
