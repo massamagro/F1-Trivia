@@ -8,6 +8,10 @@ android {
     namespace = "com.vozmediano.f1trivia"
     compileSdk = 35
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     defaultConfig {
         applicationId = "com.vozmediano.f1trivia"
         minSdk = 24
@@ -75,5 +79,8 @@ dependencies {
 
     //collectAsStateWithLifecycle dependency
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0")
+
+    //constraint layout
+    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
 
 }

@@ -17,27 +17,16 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
 
-    sealed class DriverUiState {
-        object Loading : DriverUiState()
-        data class Success(val driver: Driver) : DriverUiState()
-        data class Error(val exception: Exception) : DriverUiState()
-    }
+    private val _driver = MutableStateFlow<Driver?>(null)
+    val driver: StateFlow<Driver?> = _driver.asStateFlow()
 
-    private val _uiState = MutableStateFlow<DriverUiState>(DriverUiState.Loading)
-    val uiState: StateFlow<DriverUiState> = _uiState.asStateFlow()
-
-    init {
-        fetchDriver("alonso")
-    }
-
-    private fun fetchDriver(driverId: String) {
+    fun fetchDriver(driverId: String) {
         viewModelScope.launch {
             try {
                 val driver = f1Repository.getDriver(driverId)
-                _uiState.value = DriverUiState.Success(driver)
+                _driver.value = driver
                 Log.i("Tests", "Driver: $driver")
             } catch (e: Exception) {
-                _uiState.value = DriverUiState.Error(e)
                 Log.i("Tests", "error fetching")
             }
         }

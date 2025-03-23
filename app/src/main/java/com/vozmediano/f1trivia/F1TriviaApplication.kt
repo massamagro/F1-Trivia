@@ -23,7 +23,7 @@ class F1TriviaApplication : Application() {
             .addLast(KotlinJsonAdapterFactory())
             .build()
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://api.jolpi.ca/ergast/f1")
+            .baseUrl("http://api.jolpi.ca/ergast/f1/")
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
