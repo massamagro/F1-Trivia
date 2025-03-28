@@ -7,7 +7,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.vozmediano.f1trivia.databinding.ActivityMainBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,11 +30,28 @@ class MainActivity : AppCompatActivity() {
 
 
         try{
-            binding.textView.text = viewModel.fetchDriver("alonso").toString()
+            viewModel.fetchDriver("alonso")
+
+
         } catch (e: Exception) {
             Log.i("Tests", "error fetching (mainActivity)")
             Log.i("Tests", e.toString())
         }
+        lifecycleScope.launch {
+            viewModel.driver.collectLatest { driver ->
+                if (driver != null) {
+                    // Update UI with driver data
+                    binding.textView.text = "${driver.givenName} ${driver.familyName}"
+                    Log.i("Tests", "(UI) Driver received: $driver")
+                } else {
+                    // Handle null case (e.g., loading, error)
+                    Log.i("Tests", "(UI) Driver is null")
+                }
+            }
+        }
+
+
+        //binding.textView.text = viewModel.fetchDriver("alonso")
 
     }
 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.vozmediano.f1trivia.domain.F1Repository
 import com.vozmediano.f1trivia.domain.model.Driver
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +20,7 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
     val driver: StateFlow<Driver?> = _driver.asStateFlow()
 
     fun fetchDriver(driverId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val driver = f1Repository.getDriver(driverId)
                 _driver.value = driver

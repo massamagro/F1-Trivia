@@ -41,35 +41,16 @@ class F1RepositoryImpl(
 
     override suspend fun getDriver(driverId: String): Driver {
         return try {
-            // Fetch from API first
-            val driverResponse = f1Service.getDriver(driverId)
-            val mrData = driverResponse.mrData
-            Log.i("Tests", "(RE) MRData: $mrData")
-            val driverTable = mrData.driverTable
-            Log.i("Tests", "(RE) DriverTable: $driverTable")
-            val drivers = driverTable.driverDtos
-            Log.i("Tests", "(RE) Drivers: $drivers")
-            val driver = drivers.first()
-            Log.i("Tests", "(RE) driver: $driver")
-            val dr = driver.toDomain()
-
-            // Save in local database
-            //driverDao.insertAll(listOf(driverResponse.toDatabase()))
-
-            Log.i("Tests", "(RE) Loaded from request: $driverResponse")
-            dr
+            driverDao.getDriver(driverId).toDomain()
         } catch (e: Exception) {
-            Log.e("Tests", "(RE) API request failed: ${e.message}", e)
+                f1Service
+                    .getDriver(driverId)
+                    .mrData
+                    .driverTable
+                    .driverDtos
+                    .first()
+                    .toDomain()
 
-            // If API fails, load from cache
-            val cachedDriver = driverDao.getDriver(driverId)?.toDomain()
-            if (cachedDriver != null) {
-                Log.i("Tests", "(RE) Loaded from cache as fallback: $cachedDriver")
-                return cachedDriver
-            }
-
-            // If cache is also empty, throw an exception or return a default Driver
-            throw Exception("No driver data available for ID: $driverId")
         }
     }
 
