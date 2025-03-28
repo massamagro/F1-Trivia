@@ -4,6 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class MRDataResponse(
-    @Json(name = "MRData") val mrData: MRData
+data class DriverTable(
+    @Json(name = "driverId") val driverId: String,
+    @Json(name = "Drivers") val driverDtos: List<DriverDto>
 )

@@ -1,17 +1,16 @@
 package com.vozmediano.f1trivia.data.network.api
 
-import com.vozmediano.f1trivia.data.network.model.DriversResponse
 import com.vozmediano.f1trivia.data.network.model.MRDataResponse
 import retrofit2.http.GET
-import retrofit2.http.Query
+import retrofit2.http.Path
 
 interface F1Service {
-    @GET("/drivers")
+    @GET("drivers/{driverId}")
     suspend fun getDriver(
-        @Query("driverId") driverId: String
+        @Path("driverId") driverId: String
     ): MRDataResponse
 
-    @GET("/2024/drivers")
+    @GET("drivers")
     suspend fun getDrivers(
     ): MRDataResponse
 }

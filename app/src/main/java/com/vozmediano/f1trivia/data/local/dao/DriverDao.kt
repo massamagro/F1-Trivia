@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
 import com.vozmediano.f1trivia.data.local.entities.DriverEntity
-import com.vozmediano.f1trivia.data.network.model.DriversResponse
 
 @Dao
 interface DriverDao {

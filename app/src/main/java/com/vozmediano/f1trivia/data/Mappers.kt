@@ -1,10 +1,9 @@
 package com.vozmediano.f1trivia.data
 
 import com.vozmediano.f1trivia.data.local.entities.DriverEntity
-import com.vozmediano.f1trivia.data.network.model.DriversResponse
 import com.vozmediano.f1trivia.domain.model.Driver
 
-fun DriversResponse.toDomain() = Driver(
+fun com.vozmediano.f1trivia.data.network.model.DriverDto.toDomain() = Driver(
     driverId = driverId,
     permanentNumber = permanentNumber ?: "",
     code = code ?: "",

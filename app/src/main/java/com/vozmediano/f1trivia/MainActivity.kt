@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
 
         try{
-            binding.textView.text = viewModel.fetchDrivers().toString()
+            binding.textView.text = viewModel.fetchDriver("alonso").toString()
         } catch (e: Exception) {
             Log.i("Tests", "error fetching (mainActivity)")
             Log.i("Tests", e.toString())

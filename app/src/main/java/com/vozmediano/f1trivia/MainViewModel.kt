@@ -23,11 +23,11 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
             try {
                 val driver = f1Repository.getDriver(driverId)
                 _driver.value = driver
-                Log.i("Tests", "Driver: $driver")
+                Log.i("Tests", "(VM) Driver: $driver")
             } catch (e: retrofit2.HttpException) {
-                Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
+                Log.i("Tests", "(VM) HTTP error: ${e.code()} - ${e.message()}")
             } catch (e: Exception) {
-                Log.i("Tests", "Error fetching driver: ${e.message.orEmpty()}")
+                Log.i("Tests", "(VM) Error fetching driver: ${e.message.orEmpty()}")
             }
         }
     }
