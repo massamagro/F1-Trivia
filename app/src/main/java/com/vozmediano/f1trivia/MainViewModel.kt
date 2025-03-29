@@ -19,6 +19,9 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
     private val _driver = MutableStateFlow<Driver?>(null)
     val driver: StateFlow<Driver?> = _driver.asStateFlow()
 
+    private val _drivers = MutableStateFlow<List<Driver>?>(null)
+    val drivers: StateFlow<List<Driver>?> = _drivers.asStateFlow()
+
     fun fetchDriver(driverId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -33,10 +36,11 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
         }
     }
 
-    fun fetchDrivers(){
-        viewModelScope.launch {
+    fun fetchDrivers(season: String) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                val drivers = f1Repository.getDrivers()
+                val drivers = f1Repository.getDriversBySeason(season)
+                _drivers.value = drivers
                 Log.i("Tests", "Drivers: $drivers")
             } catch (e: retrofit2.HttpException) {
                 Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")

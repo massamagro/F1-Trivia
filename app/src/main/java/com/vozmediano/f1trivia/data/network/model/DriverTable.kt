@@ -5,6 +5,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class DriverTable(
-    @Json(name = "driverId") val driverId: String,
-    @Json(name = "Drivers") val driverDtos: List<DriverDto>
+    @Json(name = "driverId") val driverId: String ? = null,
+    @Json(name = "Drivers") val driverDtos: List<DriverDto> ? = null,
+    @Json(name = "season") val season: String ? = null
 )

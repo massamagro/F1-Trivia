@@ -6,11 +6,11 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class DriverDto(
     @Json(name = "driverId") val driverId: String,
-    @Json(name = "permanentNumber") val permanentNumber: String,
-    @Json(name = "code") val code: String,
-    @Json(name = "url") val url: String,
+    @Json(name = "permanentNumber") val permanentNumber: String ? = null,
+    @Json(name = "code") val code: String ? = null,
+    @Json(name = "url") val url: String ? = null,
     @Json(name = "givenName") val givenName: String,
     @Json(name = "familyName") val familyName: String,
-    @Json(name = "dateOfBirth") val dateOfBirth: String,
-    @Json(name = "nationality") val nationality: String
+    @Json(name = "dateOfBirth") val dateOfBirth: String ? = null,
+    @Json(name = "nationality") val nationality: String ? = null
 )

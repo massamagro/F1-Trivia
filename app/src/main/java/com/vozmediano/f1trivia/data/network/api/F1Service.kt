@@ -10,7 +10,8 @@ interface F1Service {
         @Path("driverId") driverId: String
     ): MRDataResponse
 
-    @GET("drivers")
-    suspend fun getDrivers(
+    @GET("{season}/drivers")
+    suspend fun getDriversBySeason(
+        @Path("season") season: String
     ): MRDataResponse
 }

@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
 
         try{
-            viewModel.fetchDriver("alonso")
+            viewModel.fetchDrivers("1970")
 
 
         } catch (e: Exception) {
@@ -38,20 +38,19 @@ class MainActivity : AppCompatActivity() {
             Log.i("Tests", e.toString())
         }
         lifecycleScope.launch {
-            viewModel.driver.collectLatest { driver ->
-                if (driver != null) {
+            viewModel.drivers.collectLatest { drivers ->
+                if (drivers != null) {
                     // Update UI with driver data
-                    binding.textView.text = "${driver.givenName} ${driver.familyName}"
-                    Log.i("Tests", "(UI) Driver received: $driver")
+                    binding.textView1.text = "${drivers[5].givenName} ${drivers[5].familyName}"
+                    binding.textView2.text = "${drivers[14].givenName} ${drivers[14].familyName}"
+                    binding.textView3.text = "${drivers[6].givenName} ${drivers[6].familyName}"
+                    binding.textView4.text = "${drivers[10].givenName} ${drivers[10].familyName}"
                 } else {
                     // Handle null case (e.g., loading, error)
                     Log.i("Tests", "(UI) Driver is null")
                 }
             }
         }
-
-
-        //binding.textView.text = viewModel.fetchDriver("alonso")
 
     }
 }

@@ -12,29 +12,21 @@ class F1RepositoryImpl(
     private val driverDao: DriverDao
 
 ) : F1Repository {
-    override suspend fun getDrivers(): List<Driver> {
+    override suspend fun getDriversBySeason(season: String): List<Driver> {
         return try {
-            // Fetch from API first
-            val driversResponse = f1Service
-                .getDrivers()
-                .mrData
-                .driverTable
-                .driverDtos
-                .map { it.toDomain() }
+            driverDao.getDrivers().map { it.toDomain() }
 
-            // Save in local database
-            driverDao.clearAll()  // Optional: Clear old data
-            //driverDao.insertAll(driversResponse.map { it.toDatabase() })
-
-            Log.i("Tests", "Loaded from request: $driversResponse")
-            driversResponse
         } catch (e: Exception) {
-            Log.e("Tests", "API request failed: ${e.message}", e)
+            val drivers =
+                f1Service
+                    .getDriversBySeason(season)
+                    .mrData
+                    .driverTable
+                    .driverDtos!!
+                    .map { it.toDomain() }
 
-            // If API fails, load from cache
-            val cachedDrivers = driverDao.getDrivers().map { it.toDomain() }
-            Log.i("Tests", "Loaded from cache as fallback: $cachedDrivers")
-            cachedDrivers
+            driverDao.insertAll(drivers.map { it.toDatabase() })
+            drivers
         }
     }
 
@@ -43,13 +35,17 @@ class F1RepositoryImpl(
         return try {
             driverDao.getDriver(driverId).toDomain()
         } catch (e: Exception) {
+            val driver =
                 f1Service
                     .getDriver(driverId)
                     .mrData
                     .driverTable
-                    .driverDtos
+                    .driverDtos!!
                     .first()
                     .toDomain()
+            driverDao.insert(driver.toDatabase())
+            driver
+
 
         }
     }

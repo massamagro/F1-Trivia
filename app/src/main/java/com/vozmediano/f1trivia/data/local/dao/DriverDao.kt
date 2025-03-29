@@ -18,10 +18,14 @@ interface DriverDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(drivers: List<DriverEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(driver: DriverEntity)
+
     @Query("DELETE FROM drivers")
     suspend fun clearAll()
 
     @Upsert
     suspend fun upsertAll(drivers: List<DriverEntity>)
+
 
 }
