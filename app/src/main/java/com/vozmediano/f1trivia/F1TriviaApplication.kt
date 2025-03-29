@@ -39,8 +39,9 @@ class F1TriviaApplication : Application() {
             F1Database::class.java, "f1-database"
         ).build()
         val driverDao = database.driverDao()
+        val constructorDao = database.constructorDao()
 
-        f1Repository = F1RepositoryImpl(service, driverDao)
+        f1Repository = F1RepositoryImpl(service, driverDao, constructorDao)
 
     }
 }

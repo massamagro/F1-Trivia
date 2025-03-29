@@ -30,8 +30,7 @@ class MainActivity : AppCompatActivity() {
 
 
         try{
-            viewModel.fetchDrivers("1970")
-
+            viewModel.fetchDrivers()
 
         } catch (e: Exception) {
             Log.i("Tests", "error fetching (mainActivity)")
@@ -41,16 +40,15 @@ class MainActivity : AppCompatActivity() {
             viewModel.drivers.collectLatest { drivers ->
                 if (drivers != null) {
                     // Update UI with driver data
-                    binding.textView1.text = "${drivers[5].givenName} ${drivers[5].familyName}"
-                    binding.textView2.text = "${drivers[14].givenName} ${drivers[14].familyName}"
-                    binding.textView3.text = "${drivers[6].givenName} ${drivers[6].familyName}"
-                    binding.textView4.text = "${drivers[10].givenName} ${drivers[10].familyName}"
+                    binding.textView1.text = "${drivers.size} drivers"
+                    binding.textView2.text = "number 133 ${drivers[133].givenName} ${drivers[133].familyName}"
+                    binding.textView3.text = "number 10 ${drivers[10].givenName} ${drivers[10].familyName}"
+                    binding.textView4.text = "number 0 ${drivers[0].givenName} ${drivers[0].familyName}"
                 } else {
                     // Handle null case (e.g., loading, error)
-                    Log.i("Tests", "(UI) Driver is null")
+                    Log.i("Tests", "(UI) null response")
                 }
             }
         }
-
     }
 }

@@ -1,4 +1,4 @@
-package com.vozmediano.f1trivia.data.network.model
+package com.vozmediano.f1trivia.data.network.model.driver
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

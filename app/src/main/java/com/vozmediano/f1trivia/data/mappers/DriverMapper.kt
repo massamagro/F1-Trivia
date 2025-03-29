@@ -1,15 +1,17 @@
-package com.vozmediano.f1trivia.data
+package com.vozmediano.f1trivia.data.mappers
 
 import com.vozmediano.f1trivia.data.local.entities.DriverEntity
+import com.vozmediano.f1trivia.data.network.model.driver.DriverDto
 import com.vozmediano.f1trivia.domain.model.Driver
 
-fun com.vozmediano.f1trivia.data.network.model.DriverDto.toDomain() = Driver(
+
+fun DriverDto.toDomain() = Driver(
     driverId = driverId,
     permanentNumber = permanentNumber ?: "",
     code = code ?: "",
     url = url ?: "",
-    givenName = givenName ?: "",
-    familyName = familyName ?: "",
+    givenName = givenName,
+    familyName = familyName,
     dateOfBirth = dateOfBirth ?: "",
     nationality = nationality ?: ""
 )

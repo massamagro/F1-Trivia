@@ -15,17 +15,13 @@ interface DriverDao {
     @Query("SELECT * FROM drivers")
     suspend fun getDrivers(): List<DriverEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(drivers: List<DriverEntity>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(driver: DriverEntity)
-
     @Query("DELETE FROM drivers")
     suspend fun clearAll()
 
     @Upsert
     suspend fun upsertAll(drivers: List<DriverEntity>)
 
+    @Upsert
+    suspend fun upsert(driver: DriverEntity)
 
 }
