@@ -29,20 +29,8 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
     private val _constructors = MutableStateFlow<List<Constructor>?>(null)
     val constructors: StateFlow<List<Constructor>?> = _constructors.asStateFlow()
 
-    fun fetchDriver(driverId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val driver = f1Repository.getDriverById(driverId)
-                _driver.value = driver
-                Log.i("Tests", "(VM) Driver: $driver")
-            } catch (e: retrofit2.HttpException) {
-                Log.i("Tests", "(VM) HTTP error: ${e.code()} - ${e.message()}")
-            } catch (e: Exception) {
-                Log.i("Tests", "(VM) Error fetching driver: ${e.message.orEmpty()}")
-            }
-        }
-    }
 
+    //DRIVERS
     fun fetchDrivers() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -56,7 +44,19 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
             }
         }
     }
-
+    fun fetchDriverById(driverId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val driver = f1Repository.getDriverById(driverId)
+                _driver.value = driver
+                Log.i("Tests", "(VM) Driver: $driver")
+            } catch (e: retrofit2.HttpException) {
+                Log.i("Tests", "(VM) HTTP error: ${e.code()} - ${e.message()}")
+            } catch (e: Exception) {
+                Log.i("Tests", "(VM) Error fetching driver: ${e.message.orEmpty()}")
+            }
+        }
+    }
     fun fetchDriversBySeason(season: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -71,6 +71,22 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
         }
     }
 
+
+    //CONSTRUCTORS
+    fun fetchConstructors(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val constructors = f1Repository.getConstructors()
+                _constructors.value = constructors
+                Log.i("Tests", "Constructors: $constructors")
+            } catch (e: retrofit2.HttpException) {
+                Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
+            } catch (e: Exception) {
+                Log.i("Tests", "Error fetching constructors: ${e.message.orEmpty()}")
+            }
+        }
+
+    }
     fun fetchConstructorById(constructorId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -81,6 +97,20 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
                 Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
             } catch (e: Exception) {
                 Log.i("Tests", "Error fetching constructor: ${e.message.orEmpty()}")
+            }
+        }
+    }
+
+    fun fetchConstructorsBySeason(season: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val constructors = f1Repository.getConstructorsBySeason(season)
+                _constructors.value = constructors
+                Log.i("Tests", "Constructors: $constructors")
+            } catch (e: retrofit2.HttpException) {
+                Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
+            } catch (e: Exception) {
+                Log.i("Tests", "Error fetching constructors: ${e.message.orEmpty()}")
             }
         }
     }

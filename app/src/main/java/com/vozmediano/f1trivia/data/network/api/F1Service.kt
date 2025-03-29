@@ -26,6 +26,12 @@ interface F1Service {
 
 
     //CONSTRUCTORS
+    @GET("constructors")
+    suspend fun getConstructors(
+        @Query("limit") limit: Int,
+        @Query("offset") offset: Int
+    ): MRDataResponse
+
     @GET("constructors/{constructorId}")
     suspend fun getConstructorById(
         @Path("constructorId") constructorId: String

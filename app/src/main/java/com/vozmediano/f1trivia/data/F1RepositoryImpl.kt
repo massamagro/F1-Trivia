@@ -18,44 +18,7 @@ class F1RepositoryImpl(
     private val constructorDao: ConstructorDao
 
 ) : F1Repository {
-    override suspend fun getDriversBySeason(season: String): List<Driver> {
-        return try {
-            val drivers =
-                f1Service
-                    .getDriversBySeason(season)
-                    .mrData
-                    .driverTable!!
-                    .driverDtos!!
-                    .map { it.toDomain() }
-
-            driverDao.upsertAll(drivers.map { it.toDatabase() })
-            drivers
-
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
-
-
-    override suspend fun getDriverById(driverId: String): Driver {
-        return try {
-            driverDao.getDriver(driverId).toDomain()
-        } catch (e: Exception) {
-            val driver =
-                f1Service
-                    .getDriverById(driverId)
-                    .mrData
-                    .driverTable!!
-                    .driverDtos!!
-                    .first()
-                    .toDomain()
-            driverDao.upsert(driver.toDatabase())
-            driver
-
-
-        }
-    }
-
+    //DRIVERS
     override suspend fun getDrivers(): List<Driver> {
         var offset = 0
         val limit = 100
@@ -75,7 +38,61 @@ class F1RepositoryImpl(
         return drivers
 
     }
+    override suspend fun getDriverById(driverId: String): Driver {
+        return try {
+            driverDao.getDriver(driverId).toDomain()
+        } catch (e: Exception) {
+            val driver =
+                f1Service
+                    .getDriverById(driverId)
+                    .mrData
+                    .driverTable!!
+                    .driverDtos!!
+                    .first()
+                    .toDomain()
+            driverDao.upsert(driver.toDatabase())
+            driver
 
+
+        }
+    }
+    override suspend fun getDriversBySeason(season: String): List<Driver> {
+        return try {
+            val drivers =
+                f1Service
+                    .getDriversBySeason(season)
+                    .mrData
+                    .driverTable!!
+                    .driverDtos!!
+                    .map { it.toDomain() }
+
+            driverDao.upsertAll(drivers.map { it.toDatabase() })
+            drivers
+
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    //CONSTRUCTORS
+    override suspend fun getConstructors(): List<Constructor> {
+        var offset = 0
+        val limit = 100
+
+        val constructors = mutableListOf<Constructor>()
+        while (true) {
+            try {
+                val response = f1Service.getConstructors(limit, offset)
+                val constructorDtos = response.mrData.constructorTable!!.constructorDtos!!
+                constructors.addAll(constructorDtos.map { it.toDomain() })
+                constructorDao.upsertAll(constructorDtos.map { it.toDomain().toDatabase() })
+                offset += limit
+            } catch (e: Exception) {
+                break
+            }
+        }
+        return constructors
+    }
     override suspend fun getConstructorById(constructorId: String): Constructor {
         return try {
             val constructor = constructorDao.getConstructor(constructorId).toDomain()
@@ -95,6 +112,23 @@ class F1RepositoryImpl(
         constructor
     }
 }
+    override suspend fun getConstructorsBySeason(season: String): List<Constructor> {
+        return try {
+            val constructors =
+                f1Service
+                    .getConstructorsBySeason(season)
+                    .mrData
+                    .constructorTable!!
+                    .constructorDtos!!
+                    .map { it.toDomain() }
+
+            constructorDao.upsertAll(constructors.map { it.toDatabase() })
+            constructors
+
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
 
 
 }
