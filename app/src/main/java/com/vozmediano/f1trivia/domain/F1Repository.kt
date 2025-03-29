@@ -1,5 +1,6 @@
 package com.vozmediano.f1trivia.domain
 
+import com.vozmediano.f1trivia.domain.model.Circuit
 import com.vozmediano.f1trivia.domain.model.Constructor
 import com.vozmediano.f1trivia.domain.model.Driver
 
@@ -11,10 +12,13 @@ interface F1Repository {
     suspend fun getDriversBySeason(season: String): List<Driver>
 
 
-
     //CONSTRUCTORS
     suspend fun getConstructors(): List<Constructor>
     suspend fun getConstructorById(constructorId: String): Constructor
     suspend fun getConstructorsBySeason(season: String): List<Constructor>
+
+
+    //CIRCUITS
+    suspend fun getCircuits(): List<Circuit>
 
 }

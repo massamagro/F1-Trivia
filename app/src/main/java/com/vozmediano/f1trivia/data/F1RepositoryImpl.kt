@@ -1,6 +1,7 @@
 package com.vozmediano.f1trivia.data
 
 import android.util.Log
+import com.vozmediano.f1trivia.data.local.dao.CircuitDao
 import com.vozmediano.f1trivia.data.local.dao.ConstructorDao
 import com.vozmediano.f1trivia.data.local.dao.DriverDao
 import com.vozmediano.f1trivia.data.mappers.toDatabase
@@ -8,14 +9,17 @@ import com.vozmediano.f1trivia.data.mappers.toDomain
 import com.vozmediano.f1trivia.data.network.api.F1Service
 
 import com.vozmediano.f1trivia.domain.F1Repository
+import com.vozmediano.f1trivia.domain.model.Circuit
 import com.vozmediano.f1trivia.domain.model.Driver
 import com.vozmediano.f1trivia.domain.model.Constructor
+import java.lang.Integer.parseInt
 
 
 class F1RepositoryImpl(
     private val f1Service: F1Service,
     private val driverDao: DriverDao,
-    private val constructorDao: ConstructorDao
+    private val constructorDao: ConstructorDao,
+    private val circuitDao: CircuitDao
 
 ) : F1Repository {
     //DRIVERS
@@ -31,6 +35,10 @@ class F1RepositoryImpl(
                 drivers.addAll(driverDtos.map { it.toDomain() })
                 driverDao.upsertAll(driverDtos.map { it.toDomain().toDatabase() })
                 offset += limit
+                val totalDrivers = response.mrData.total?.toIntOrNull() ?: Int.MAX_VALUE
+                if (offset >= totalDrivers) {
+                    break
+                }
             } catch (e: Exception) {
                 break
             }
@@ -87,6 +95,10 @@ class F1RepositoryImpl(
                 constructors.addAll(constructorDtos.map { it.toDomain() })
                 constructorDao.upsertAll(constructorDtos.map { it.toDomain().toDatabase() })
                 offset += limit
+                val totalConstructors = response.mrData.total?.toIntOrNull() ?: Int.MAX_VALUE
+                if (offset >= totalConstructors) {
+                    break
+                }
             } catch (e: Exception) {
                 break
             }
@@ -128,6 +140,31 @@ class F1RepositoryImpl(
         } catch (e: Exception) {
             emptyList()
         }
+    }
+
+    //CIRCUITS
+    override suspend fun getCircuits(): List<Circuit> {
+        var offset = 0
+        val limit = 100
+
+        val circuits = mutableListOf<Circuit>()
+        while (true) {
+            try {
+                val response = f1Service.getCircuits(limit, offset)
+                val circuitDtos = response.mrData.circuitTable!!.circuitDtos!!
+                circuits.addAll(circuitDtos.map { it.toDomain() })
+                circuitDao.upsertAll(circuitDtos.map { it.toDomain().toDatabase() })
+                offset += limit
+                val totalCircuits = response.mrData.total?.toIntOrNull() ?: Int.MAX_VALUE
+                if (offset >= totalCircuits) {
+                    break
+                }
+
+            } catch (e: Exception) {
+                break
+            }
+        }
+        return circuits
     }
 
 

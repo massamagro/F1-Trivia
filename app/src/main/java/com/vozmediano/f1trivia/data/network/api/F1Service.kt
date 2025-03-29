@@ -41,4 +41,11 @@ interface F1Service {
     suspend fun getConstructorsBySeason(
         @Path("season") season: String
     ): MRDataResponse
+
+    //CIRCUITS
+    @GET("circuits")
+    suspend fun getCircuits(
+        @Query("limit") limit: Int,
+        @Query("offset") offset: Int
+    ): MRDataResponse
 }

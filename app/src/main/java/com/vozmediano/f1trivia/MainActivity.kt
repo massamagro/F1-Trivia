@@ -28,20 +28,18 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        viewModel.fetchConstructorsBySeason("2021")
+        viewModel.fetchCircuits()
+
 
 
         lifecycleScope.launch {
-            viewModel.constructors.collectLatest { constructors ->
-                if (constructors != null) {
+            viewModel.circuits.collectLatest { circuits ->
+                if (circuits != null) {
                     // Update UI with driver data
-                    binding.textView1.text = "${constructors.size} constructors"
-                    binding.textView2.text =
-                        "${constructors[0].name} - ${constructors[0].nationality}"
-                    binding.textView3.text =
-                        "${constructors[2].name} - ${constructors[2].nationality}"
-                    binding.textView4.text =
-                        "${constructors[6].name} - ${constructors[6].nationality}"
+                    binding.textView1.text = "${circuits[64].circuitName} \nbased at ${circuits[64].location.country}"
+                    binding.textView2.text = "${circuits[44].circuitName} \nbased at ${circuits[44].location.country}"
+                    binding.textView3.text = "${circuits[14].circuitName} \nbased at ${circuits[14].location.country}"
+                    binding.textView4.text = "${circuits[33].circuitName} \nbased at ${circuits[33].location.country}"
                 } else {
                     // Handle null case (e.g., loading, error)
                     Log.i("Tests", "(UI) null response")

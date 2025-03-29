@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.vozmediano.f1trivia.domain.F1Repository
+import com.vozmediano.f1trivia.domain.model.Circuit
 import com.vozmediano.f1trivia.domain.model.Constructor
 import com.vozmediano.f1trivia.domain.model.Driver
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +29,9 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
 
     private val _constructors = MutableStateFlow<List<Constructor>?>(null)
     val constructors: StateFlow<List<Constructor>?> = _constructors.asStateFlow()
+
+    private val _circuits = MutableStateFlow<List<Circuit>?>(null)
+    val circuits: StateFlow<List<Circuit>?> = _circuits.asStateFlow()
 
 
     //DRIVERS
@@ -100,7 +104,6 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
             }
         }
     }
-
     fun fetchConstructorsBySeason(season: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -111,6 +114,21 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
                 Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
             } catch (e: Exception) {
                 Log.i("Tests", "Error fetching constructors: ${e.message.orEmpty()}")
+            }
+        }
+    }
+
+    //CIRCUITS
+    fun fetchCircuits() {
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val circuits = f1Repository.getCircuits()
+                _circuits.value = circuits
+            } catch (e: retrofit2.HttpException) {
+                Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
+            } catch (e: Exception) {
+                Log.i("Tests", "Error fetching circuits: ${e.message.orEmpty()}")
             }
         }
     }

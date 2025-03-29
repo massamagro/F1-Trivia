@@ -40,8 +40,9 @@ class F1TriviaApplication : Application() {
         ).build()
         val driverDao = database.driverDao()
         val constructorDao = database.constructorDao()
+        val circuitDao = database.circuitDao()
 
-        f1Repository = F1RepositoryImpl(service, driverDao, constructorDao)
+        f1Repository = F1RepositoryImpl(service, driverDao, constructorDao, circuitDao)
 
     }
 }
