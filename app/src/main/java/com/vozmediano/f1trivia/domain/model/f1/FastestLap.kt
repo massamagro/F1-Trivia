@@ -1,4 +1,4 @@
-package com.vozmediano.f1trivia.domain.model
+package com.vozmediano.f1trivia.domain.model.f1
 
 data class FastestLap(
     val rank: String,

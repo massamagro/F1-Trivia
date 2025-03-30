@@ -7,9 +7,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.vozmediano.f1trivia.domain.F1Repository
-import com.vozmediano.f1trivia.domain.model.Circuit
-import com.vozmediano.f1trivia.domain.model.Constructor
-import com.vozmediano.f1trivia.domain.model.Driver
+import com.vozmediano.f1trivia.domain.model.f1.Circuit
+import com.vozmediano.f1trivia.domain.model.f1.Constructor
+import com.vozmediano.f1trivia.domain.model.f1.Driver
+import com.vozmediano.f1trivia.domain.model.quiz.Question
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,21 +19,36 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
 
+    //QUESTION
+    private val _question = MutableStateFlow<Question?>(null)
+    val question: StateFlow<Question?> = _question.asStateFlow()
+
+    //DRIVERS
     private val _driver = MutableStateFlow<Driver?>(null)
     val driver: StateFlow<Driver?> = _driver.asStateFlow()
 
     private val _drivers = MutableStateFlow<List<Driver>?>(null)
     val drivers: StateFlow<List<Driver>?> = _drivers.asStateFlow()
 
+    //CONSTRUCTORS
     private val _constructor = MutableStateFlow<Constructor?>(null)
     val constructor: StateFlow<Constructor?> = _constructor.asStateFlow()
 
     private val _constructors = MutableStateFlow<List<Constructor>?>(null)
     val constructors: StateFlow<List<Constructor>?> = _constructors.asStateFlow()
 
+    //CIRCUITS
+    private val _circuit = MutableStateFlow<Circuit?>(null)
+    val circuit: StateFlow<Circuit?> = _circuit.asStateFlow()
+
     private val _circuits = MutableStateFlow<List<Circuit>?>(null)
     val circuits: StateFlow<List<Circuit>?> = _circuits.asStateFlow()
 
+    //QUESTION
+    fun generateQuestion(){
+        var question : Question = Question()
+        question.options = drivers.value?.shuffled()?.take(4)
+    }
 
     //DRIVERS
     fun fetchDrivers() {

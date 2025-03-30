@@ -1,8 +1,8 @@
 package com.vozmediano.f1trivia.domain
 
-import com.vozmediano.f1trivia.domain.model.Circuit
-import com.vozmediano.f1trivia.domain.model.Constructor
-import com.vozmediano.f1trivia.domain.model.Driver
+import com.vozmediano.f1trivia.domain.model.f1.Circuit
+import com.vozmediano.f1trivia.domain.model.f1.Constructor
+import com.vozmediano.f1trivia.domain.model.f1.Driver
 
 
 interface F1Repository {

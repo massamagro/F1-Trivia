@@ -9,10 +9,9 @@ import com.vozmediano.f1trivia.data.mappers.toDomain
 import com.vozmediano.f1trivia.data.network.api.F1Service
 
 import com.vozmediano.f1trivia.domain.F1Repository
-import com.vozmediano.f1trivia.domain.model.Circuit
-import com.vozmediano.f1trivia.domain.model.Driver
-import com.vozmediano.f1trivia.domain.model.Constructor
-import java.lang.Integer.parseInt
+import com.vozmediano.f1trivia.domain.model.f1.Circuit
+import com.vozmediano.f1trivia.domain.model.f1.Driver
+import com.vozmediano.f1trivia.domain.model.f1.Constructor
 
 
 class F1RepositoryImpl(

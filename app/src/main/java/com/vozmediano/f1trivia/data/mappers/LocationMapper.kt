@@ -2,7 +2,7 @@ package com.vozmediano.f1trivia.data.mappers
 
 import com.vozmediano.f1trivia.data.local.entities.LocationEntity
 import com.vozmediano.f1trivia.data.network.model.circuit.LocationDto
-import com.vozmediano.f1trivia.domain.model.Location
+import com.vozmediano.f1trivia.domain.model.f1.Location
 
 
 fun LocationDto.toDomain() = Location(

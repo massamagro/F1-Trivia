@@ -2,7 +2,7 @@ package com.vozmediano.f1trivia.data.mappers
 
 import com.vozmediano.f1trivia.data.local.entities.CircuitEntity
 import com.vozmediano.f1trivia.data.network.model.circuit.CircuitDto
-import com.vozmediano.f1trivia.domain.model.Circuit
+import com.vozmediano.f1trivia.domain.model.f1.Circuit
 
 fun CircuitDto.toDomain() = Circuit(
     circuitId = circuitId,
