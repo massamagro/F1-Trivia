@@ -80,6 +80,24 @@ class F1RepositoryImpl(
             emptyList()
         }
     }
+    override suspend fun getBySeasonAndCircuitAndPosition(season: String, circuit: String, position: String): Driver? {
+        return try {
+            val response = f1Service.getBySeasonAndCircuitAndPosition(season, circuit, position)
+            Log.i("Tests", "Response: $response")
+            val driver = response.mrData.raceTable?.racesDto
+                ?.firstOrNull()
+                ?.results
+                ?.firstOrNull()
+                ?.driverDto
+                ?.toDomain()
+            driver
+
+        } catch (e: Exception) {
+            Log.i("Tests", "Error fetching driver by season, circuit and position: ${e.message.orEmpty()}")
+            null
+        }
+    }
+
 
     //CONSTRUCTORS
     override suspend fun getConstructors(): List<Constructor> {

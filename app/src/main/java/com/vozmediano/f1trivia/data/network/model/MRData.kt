@@ -5,6 +5,7 @@ import com.squareup.moshi.JsonClass
 import com.vozmediano.f1trivia.data.network.model.circuit.CircuitTable
 import com.vozmediano.f1trivia.data.network.model.constructor.ConstructorTable
 import com.vozmediano.f1trivia.data.network.model.driver.DriverTable
+import com.vozmediano.f1trivia.data.network.model.race.RaceTable
 
 @JsonClass(generateAdapter = true)
 data class MRData(
@@ -16,6 +17,7 @@ data class MRData(
     @Json(name = "total") val total: String,
     @Json(name = "DriverTable") val driverTable: DriverTable ? = null,
     @Json(name = "ConstructorTable") val constructorTable: ConstructorTable ? = null,
-    @Json(name = "CircuitTable") val circuitTable: CircuitTable? = null
+    @Json(name = "CircuitTable") val circuitTable: CircuitTable? = null,
+    @Json(name = "RaceTable") val raceTable: RaceTable? = null
 
 )

@@ -44,11 +44,6 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
     private val _circuits = MutableStateFlow<List<Circuit>?>(null)
     val circuits: StateFlow<List<Circuit>?> = _circuits.asStateFlow()
 
-    //QUESTION
-    fun generateQuestion(){
-        var question : Question = Question()
-        question.options = drivers.value?.shuffled()?.take(4)
-    }
 
     //DRIVERS
     fun fetchDrivers() {
@@ -87,6 +82,19 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
                 Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
             } catch (e: Exception) {
                 Log.i("Tests", "Error fetching drivers: ${e.message.orEmpty()}")
+            }
+        }
+    }
+    fun fetchDriverBySeasonAndCircuitAndPosition(season: String, circuit: String, position: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val driver = f1Repository.getBySeasonAndCircuitAndPosition(season, circuit, position)
+                _driver.value = driver
+                Log.i("Tests", "(ViewModel) Driver: $driver")
+            } catch (e: retrofit2.HttpException) {
+                Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
+            } catch (e: Exception) {
+                Log.i("Tests", "Error fetching driver: ${e.message.orEmpty()}")
             }
         }
     }
