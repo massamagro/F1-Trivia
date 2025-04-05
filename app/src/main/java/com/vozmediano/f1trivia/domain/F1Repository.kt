@@ -10,11 +10,11 @@ interface F1Repository {
     suspend fun getDrivers(): List<Driver>
     suspend fun getDriverById(driverId: String): Driver
     suspend fun getDriversBySeason(season: String): List<Driver>
-    suspend fun getBySeasonAndCircuitAndPosition(
+    suspend fun getDriverBySeasonAndCircuitAndPosition(
         season: String,
         circuit: String,
         position: String
-    ): Driver?
+    ): Driver
 
 
     //CONSTRUCTORS

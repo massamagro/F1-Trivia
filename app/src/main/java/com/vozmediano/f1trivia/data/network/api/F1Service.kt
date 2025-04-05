@@ -25,7 +25,7 @@ interface F1Service {
     ): MRDataResponse
 
     @GET("{season}/circuits/{circuit}/results/{position}")
-    suspend fun getBySeasonAndCircuitAndPosition(
+    suspend fun getDriverBySeasonAndCircuitAndPosition(
         @Path("season") season: String,
         @Path("circuit") circuit: String,
         @Path("position") position: String

@@ -10,8 +10,10 @@ import com.vozmediano.f1trivia.domain.F1Repository
 import com.vozmediano.f1trivia.domain.model.f1.Circuit
 import com.vozmediano.f1trivia.domain.model.f1.Constructor
 import com.vozmediano.f1trivia.domain.model.f1.Driver
+import com.vozmediano.f1trivia.domain.model.quiz.Option
 import com.vozmediano.f1trivia.domain.model.quiz.Question
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -44,6 +46,38 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
     private val _circuits = MutableStateFlow<List<Circuit>?>(null)
     val circuits: StateFlow<List<Circuit>?> = _circuits.asStateFlow()
 
+    //QUESTION
+    fun fetchQuestionDriverBySeasonAndCircuitAndPosition() {
+        viewModelScope.launch {
+            val circuit = "monaco"
+            val year = (1950..2024).random().toString()
+            val position = "1"
+            val question = Question("Who won the ${circuit.capitalize()} in $year", mutableListOf())
+
+            val drivers = listOf(
+                async(Dispatchers.IO) { f1Repository.getDriverBySeasonAndCircuitAndPosition(year, circuit, "1") },
+                async(Dispatchers.IO) { f1Repository.getDriverBySeasonAndCircuitAndPosition(year, circuit, "2") },
+                async(Dispatchers.IO) { f1Repository.getDriverBySeasonAndCircuitAndPosition(year, circuit, "3") },
+                async(Dispatchers.IO) { f1Repository.getDriverBySeasonAndCircuitAndPosition(year, circuit, "4") }
+            ).map { it.await() }
+
+            drivers.forEachIndexed { index, driver ->
+                question.options.add(
+                    Option(
+                        id = index,
+                        shortText = "${driver.givenName} ${driver.familyName}",
+                        longText = "${driver.givenName} ${driver.familyName} won the $circuit GP in $year",
+                        isCorrect = (index == 0) // Mark first driver as the correct one
+                    )
+                )
+            }
+            question.options.shuffle() // Shuffle the options to randomize their order
+            _question.value = question
+        }
+    }
+
+
+
 
     //DRIVERS
     fun fetchDrivers() {
@@ -59,6 +93,7 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
             }
         }
     }
+
     fun fetchDriverById(driverId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -72,6 +107,7 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
             }
         }
     }
+
     fun fetchDriversBySeason(season: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -85,14 +121,12 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
             }
         }
     }
-    fun fetchDriverBySeasonAndCircuitAndPosition(season: String, circuit: String, position: String) {
+
+    private fun fetchDriverBySeasonAndCircuitAndPosition(season: String, circuit: String, position: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val driver = f1Repository.getBySeasonAndCircuitAndPosition(season, circuit, position)
+                val driver = f1Repository.getDriverBySeasonAndCircuitAndPosition(season, circuit, position)
                 _driver.value = driver
-                Log.i("Tests", "(ViewModel) Driver: $driver")
-            } catch (e: retrofit2.HttpException) {
-                Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
             } catch (e: Exception) {
                 Log.i("Tests", "Error fetching driver: ${e.message.orEmpty()}")
             }
@@ -101,7 +135,7 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
 
 
     //CONSTRUCTORS
-    fun fetchConstructors(){
+    fun fetchConstructors() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val constructors = f1Repository.getConstructors()
@@ -115,6 +149,7 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
         }
 
     }
+
     fun fetchConstructorById(constructorId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -128,6 +163,7 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
             }
         }
     }
+
     fun fetchConstructorsBySeason(season: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
