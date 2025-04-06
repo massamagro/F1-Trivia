@@ -66,7 +66,9 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
 
             // Prepare the question object
             val question = Question(
-                "Who won the ${correctCircuit.replaceFirstChar { it.uppercase() }.replace('_',' ')} GP in $correctSeason?",
+                "Who won the ${
+                    correctCircuit.replaceFirstChar { it.uppercase() }.replace('_', ' ')
+                } GP in $correctSeason?",
                 mutableListOf()
             )
 
@@ -88,19 +90,21 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
 
 
                 setDrivers.add(correctDriver.driverId)
-                question.options.add(Option(
-                    id = 0,
-                    shortText = "${correctDriver.givenName} ${correctDriver.familyName}",
-                    longText = "${correctDriver.givenName} ${correctDriver.familyName} won the $correctCircuit GP in $correctSeason",
-                    isCorrect = true
-                ))
+                question.options.add(
+                    Option(
+                        id = 0,
+                        shortText = "${correctDriver.givenName} ${correctDriver.familyName}",
+                        longText = "${correctDriver.givenName} ${correctDriver.familyName} won the $correctCircuit GP in $correctSeason",
+                        isCorrect = true
+                    )
+                )
 
                 // Fetch 3 wrong drivers as distractors from different years and circuits
                 while (setDrivers.size < 4) {
                     var season = ""
                     var circuitId = ""
                     var position = ""
-                    when((1..5).random()){
+                    when ((1..5).random()) {
                         //Same circuit, different season
                         1 -> {
                             Log.i("ViewModel", "Same circuit, different season")
@@ -112,7 +116,8 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
                         2 -> {
                             Log.i("ViewModel", "Different circuit, same season")
                             season = correctSeason
-                            circuitId = circuits.filter { it.circuitId != correctCircuit }.random().circuitId
+                            circuitId = circuits.filter { it.circuitId != correctCircuit }
+                                .random().circuitId
                             position = "1"
                         }
                         //Same circuit, same season, 2nd position
@@ -131,9 +136,10 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
                         }
                         //Different race, same year, podium position
                         5 -> {
-                            Log.i("ViewModel","Different race, same year, podium position")
+                            Log.i("ViewModel", "Different race, same year, podium position")
                             season = correctSeason
-                            circuitId = circuits.filter { it.circuitId != correctCircuit }.random().circuitId
+                            circuitId = circuits.filter { it.circuitId != correctCircuit }
+                                .random().circuitId
                             position = (2..3).random().toString()
                         }
 
@@ -171,6 +177,49 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
                 Log.e("ViewModel", "Unexpected error while generating question: ${e.message}")
                 _question.value = null
             }
+        }
+    }
+
+    fun fetchQuestionDriverByNationality() {
+        viewModelScope.launch {
+            val drivers = try {
+                f1Repository.getDrivers()
+            } catch (e: Exception) {
+                Log.e("ViewModel", "Failed to fetch drivers: ${e.message}")
+                _question.value = null
+                return@launch
+            }
+            val correctDriver = drivers.random()
+            val question = Question(
+                title = "Which of this drivers is ${correctDriver.nationality}?",
+                options = mutableListOf()
+            )
+            val setNationalities = mutableSetOf<String>() // To avoid duplicates
+            setNationalities.add(correctDriver.nationality)
+            question.options.add(
+                Option(
+                    id = 0,
+                    shortText = "${correctDriver.givenName} ${correctDriver.familyName}",
+                    longText = "${correctDriver.givenName} ${correctDriver.familyName} is ${correctDriver.nationality}",
+                    isCorrect = true
+                )
+            )
+            while(question.options.size < 4){
+                val driver = drivers.filter {it.nationality != correctDriver.nationality}.random()
+                if (setNationalities.contains(driver.nationality)) continue
+                setNationalities.add(driver.nationality)
+                question.options.add(
+                    Option(
+                        id = question.options.size,
+                        shortText = "${driver.givenName} ${driver.familyName}",
+                        longText = "",
+                        isCorrect = false
+                    )
+                )
+            }
+            question.options.shuffle()
+            _question.value = question
+
         }
     }
 

@@ -71,7 +71,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun generateQuestion() {
-        viewModel.fetchQuestionDriverBySeasonAndCircuitAndPosition()
+        when((1..2).random()){
+        1 -> viewModel.fetchQuestionDriverBySeasonAndCircuitAndPosition()
+        2 -> viewModel.fetchQuestionDriverByNationality()
+        }
     }
 
     //LISTENERS
