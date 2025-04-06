@@ -11,7 +11,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.vozmediano.f1trivia.databinding.ActivityMainBinding
 import com.vozmediano.f1trivia.domain.model.quiz.Option
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -93,7 +92,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            delay(2000)
             generateQuestion()
         }
     }
