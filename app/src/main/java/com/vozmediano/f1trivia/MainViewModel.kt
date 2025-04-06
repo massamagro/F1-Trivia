@@ -13,7 +13,6 @@ import com.vozmediano.f1trivia.domain.model.f1.Driver
 import com.vozmediano.f1trivia.domain.model.quiz.Option
 import com.vozmediano.f1trivia.domain.model.quiz.Question
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -49,30 +48,25 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
     //QUESTION
     fun fetchQuestionDriverBySeasonAndCircuitAndPosition() {
         viewModelScope.launch {
-            val correctYear = (2003..2024).random().toString()
-
-            // Fetch circuits for the selected season
+            val correctSeason = (2023..2024).random().toString()
             val circuits = try {
-                f1Repository.getCircuitsBySeason(correctYear)
+                f1Repository.getCircuitsBySeason(correctSeason)
             } catch (e: Exception) {
                 Log.e("ViewModel", "Failed to fetch circuits: ${e.message}")
                 _question.value = null
                 return@launch
             }
-
-            // Check if circuits are empty
             if (circuits.isEmpty()) {
-                Log.e("ViewModel", "No circuits found for year $correctYear")
+                Log.e("ViewModel", "No circuits found for year $correctSeason")
                 _question.value = null
                 return@launch
             }
-
-            // Randomly select a circuit from the available circuits
             val correctCircuit = circuits.random().circuitId
+            val correctPostion = "1"
 
             // Prepare the question object
             val question = Question(
-                "Who won the ${correctCircuit.replaceFirstChar { it.uppercase() }} GP in $correctYear?",
+                "Who won the ${correctCircuit.replaceFirstChar { it.uppercase() }.replace('_',' ')} GP in $correctSeason?",
                 mutableListOf()
             )
 
@@ -80,66 +74,97 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
                 // Fetch correct driver for the circuit and year
                 val correctDriver = try {
                     f1Repository.getDriverBySeasonAndCircuitAndPosition(
-                        correctYear,
+                        correctSeason,
                         correctCircuit,
-                        "1"
+                        correctPostion
                     )
                 } catch (e: Exception) {
                     Log.e("ViewModel", "Correct driver fetch failed: ${e.message}")
                     _question.value = null
                     return@launch
                 }
+                val setOptions = mutableListOf<Option>()
+                val setDrivers = mutableSetOf<String>() // To avoid duplicates
 
-                // Add the correct driver to the options
-                question.options.add(
-                    Option(
-                        id = 0,
-                        shortText = "${correctDriver.givenName} ${correctDriver.familyName}",
-                        longText = "${correctDriver.givenName} ${correctDriver.familyName} won the $correctCircuit GP in $correctYear",
-                        isCorrect = true
-                    )
-                )
+
+                setDrivers.add(correctDriver.driverId)
+                question.options.add(Option(
+                    id = 0,
+                    shortText = "${correctDriver.givenName} ${correctDriver.familyName}",
+                    longText = "${correctDriver.givenName} ${correctDriver.familyName} won the $correctCircuit GP in $correctSeason",
+                    isCorrect = true
+                ))
 
                 // Fetch 3 wrong drivers as distractors from different years and circuits
-                val allCircuits = listOf("monaco", "spa", "suzuka", "silverstone", "interlagos", "monza")
-                val distractorOptions = mutableSetOf<String>() // To avoid duplicates
-                val wrongDrivers = mutableListOf<Option>()
+                while (setDrivers.size < 4) {
+                    var season = ""
+                    var circuitId = ""
+                    var position = ""
+                    when((1..5).random()){
+                        //Same circuit, different season
+                        1 -> {
+                            Log.i("ViewModel", "Same circuit, different season")
+                            season = correctSeason + (-2..2).random()
+                            circuitId = correctCircuit
+                            position = "1"
+                        }
+                        //Different circuit, same season
+                        2 -> {
+                            Log.i("ViewModel", "Different circuit, same season")
+                            season = correctSeason
+                            circuitId = circuits.filter { it.circuitId != correctCircuit }.random().circuitId
+                            position = "1"
+                        }
+                        //Same circuit, same season, 2nd position
+                        3 -> {
+                            Log.i("ViewModel", "Same circuit, same season, 2nd position")
+                            season = correctSeason
+                            circuitId = correctCircuit
+                            position = "2"
+                        }
+                        //Same circuit, same season, 3rd position
+                        4 -> {
+                            Log.i("ViewModel", "Same circuit, same season, 3rd position")
+                            season = correctSeason
+                            circuitId = correctCircuit
+                            position = "3"
+                        }
+                        //Different race, same year, podium position
+                        5 -> {
+                            Log.i("ViewModel","Different race, same year, podium position")
+                            season = correctSeason
+                            circuitId = circuits.filter { it.circuitId != correctCircuit }.random().circuitId
+                            position = (2..3).random().toString()
+                        }
 
-                while (wrongDrivers.size < 3) {
-                    val circuit = allCircuits.random()
-                    val year = (2003..2024).random().toString()
-                    val key = "$year-$circuit"
-                    if (key == "$correctYear-$correctCircuit" || !distractorOptions.add(key)) continue
+
+                    }
 
                     try {
                         val driver = f1Repository.getDriverBySeasonAndCircuitAndPosition(
-                            year,
-                            circuit,
-                            "1"
+                            season,
+                            circuitId,
+                            position
                         )
-                        wrongDrivers.add(
+                        if (driver.driverId == correctDriver.driverId || setDrivers.contains(driver.driverId)) {
+                            continue // Skip if it's the same driver
+                        }
+                        setDrivers.add(driver.driverId)
+                        setOptions.add(
                             Option(
-                                id = wrongDrivers.size + 1,
+                                id = setOptions.size,
                                 shortText = "${driver.givenName} ${driver.familyName}",
-                                longText = "${driver.givenName} ${driver.familyName} won the $circuit GP in $year",
+                                longText = "",
                                 isCorrect = false
                             )
                         )
                     } catch (e: Exception) {
-                        Log.w(
-                            "ViewModel",
-                            "Skipping invalid distractor: $key (${e.message})"
-                        )
+                        Log.i("ViewModel", "Failed to fetch driver for distractor: ${e.message}")
                     }
                 }
 
-                // Add all wrong drivers to the options
-                question.options.addAll(wrongDrivers)
-
-                // Shuffle the options to randomize the answer positions
+                question.options.addAll(setOptions)
                 question.options.shuffle()
-
-                // Set the question to the state
                 _question.value = question
 
             } catch (e: Exception) {
