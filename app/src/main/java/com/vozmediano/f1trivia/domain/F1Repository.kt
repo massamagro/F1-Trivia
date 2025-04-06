@@ -25,5 +25,6 @@ interface F1Repository {
 
     //CIRCUITS
     suspend fun getCircuits(): List<Circuit>
+    suspend fun getCircuitsBySeason(season: String): List<Circuit>
 
 }

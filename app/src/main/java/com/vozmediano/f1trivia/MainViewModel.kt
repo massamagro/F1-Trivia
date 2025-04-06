@@ -49,34 +49,105 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
     //QUESTION
     fun fetchQuestionDriverBySeasonAndCircuitAndPosition() {
         viewModelScope.launch {
-            val circuit = "monaco"
-            val year = (1950..2024).random().toString()
-            val position = "1"
-            val question = Question("Who won the ${circuit.capitalize()} in $year", mutableListOf())
+            val correctYear = (2003..2024).random().toString()
 
-            val drivers = listOf(
-                async(Dispatchers.IO) { f1Repository.getDriverBySeasonAndCircuitAndPosition(year, circuit, "1") },
-                async(Dispatchers.IO) { f1Repository.getDriverBySeasonAndCircuitAndPosition(year, circuit, "2") },
-                async(Dispatchers.IO) { f1Repository.getDriverBySeasonAndCircuitAndPosition(year, circuit, "3") },
-                async(Dispatchers.IO) { f1Repository.getDriverBySeasonAndCircuitAndPosition(year, circuit, "4") }
-            ).map { it.await() }
+            // Fetch circuits for the selected season
+            val circuits = try {
+                f1Repository.getCircuitsBySeason(correctYear)
+            } catch (e: Exception) {
+                Log.e("ViewModel", "Failed to fetch circuits: ${e.message}")
+                _question.value = null
+                return@launch
+            }
 
-            drivers.forEachIndexed { index, driver ->
+            // Check if circuits are empty
+            if (circuits.isEmpty()) {
+                Log.e("ViewModel", "No circuits found for year $correctYear")
+                _question.value = null
+                return@launch
+            }
+
+            // Randomly select a circuit from the available circuits
+            val correctCircuit = circuits.random().circuitId
+
+            // Prepare the question object
+            val question = Question(
+                "Who won the ${correctCircuit.replaceFirstChar { it.uppercase() }} GP in $correctYear?",
+                mutableListOf()
+            )
+
+            try {
+                // Fetch correct driver for the circuit and year
+                val correctDriver = try {
+                    f1Repository.getDriverBySeasonAndCircuitAndPosition(
+                        correctYear,
+                        correctCircuit,
+                        "1"
+                    )
+                } catch (e: Exception) {
+                    Log.e("ViewModel", "Correct driver fetch failed: ${e.message}")
+                    _question.value = null
+                    return@launch
+                }
+
+                // Add the correct driver to the options
                 question.options.add(
                     Option(
-                        id = index,
-                        shortText = "${driver.givenName} ${driver.familyName}",
-                        longText = "${driver.givenName} ${driver.familyName} won the $circuit GP in $year",
-                        isCorrect = (index == 0) // Mark first driver as the correct one
+                        id = 0,
+                        shortText = "${correctDriver.givenName} ${correctDriver.familyName}",
+                        longText = "${correctDriver.givenName} ${correctDriver.familyName} won the $correctCircuit GP in $correctYear",
+                        isCorrect = true
                     )
                 )
+
+                // Fetch 3 wrong drivers as distractors from different years and circuits
+                val allCircuits = listOf("monaco", "spa", "suzuka", "silverstone", "interlagos", "monza")
+                val distractorOptions = mutableSetOf<String>() // To avoid duplicates
+                val wrongDrivers = mutableListOf<Option>()
+
+                while (wrongDrivers.size < 3) {
+                    val circuit = allCircuits.random()
+                    val year = (2003..2024).random().toString()
+                    val key = "$year-$circuit"
+                    if (key == "$correctYear-$correctCircuit" || !distractorOptions.add(key)) continue
+
+                    try {
+                        val driver = f1Repository.getDriverBySeasonAndCircuitAndPosition(
+                            year,
+                            circuit,
+                            "1"
+                        )
+                        wrongDrivers.add(
+                            Option(
+                                id = wrongDrivers.size + 1,
+                                shortText = "${driver.givenName} ${driver.familyName}",
+                                longText = "${driver.givenName} ${driver.familyName} won the $circuit GP in $year",
+                                isCorrect = false
+                            )
+                        )
+                    } catch (e: Exception) {
+                        Log.w(
+                            "ViewModel",
+                            "Skipping invalid distractor: $key (${e.message})"
+                        )
+                    }
+                }
+
+                // Add all wrong drivers to the options
+                question.options.addAll(wrongDrivers)
+
+                // Shuffle the options to randomize the answer positions
+                question.options.shuffle()
+
+                // Set the question to the state
+                _question.value = question
+
+            } catch (e: Exception) {
+                Log.e("ViewModel", "Unexpected error while generating question: ${e.message}")
+                _question.value = null
             }
-            question.options.shuffle() // Shuffle the options to randomize their order
-            _question.value = question
         }
     }
-
-
 
 
     //DRIVERS
@@ -122,10 +193,15 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
         }
     }
 
-    private fun fetchDriverBySeasonAndCircuitAndPosition(season: String, circuit: String, position: String) {
+    private fun fetchDriverBySeasonAndCircuitAndPosition(
+        season: String,
+        circuit: String,
+        position: String
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val driver = f1Repository.getDriverBySeasonAndCircuitAndPosition(season, circuit, position)
+                val driver =
+                    f1Repository.getDriverBySeasonAndCircuitAndPosition(season, circuit, position)
                 _driver.value = driver
             } catch (e: Exception) {
                 Log.i("Tests", "Error fetching driver: ${e.message.orEmpty()}")
@@ -184,6 +260,19 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val circuits = f1Repository.getCircuits()
+                _circuits.value = circuits
+            } catch (e: retrofit2.HttpException) {
+                Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
+            } catch (e: Exception) {
+                Log.i("Tests", "Error fetching circuits: ${e.message.orEmpty()}")
+            }
+        }
+    }
+
+    fun fetchCircuitsBySeason(season: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val circuits = f1Repository.getCircuitsBySeason(season)
                 _circuits.value = circuits
             } catch (e: retrofit2.HttpException) {
                 Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")

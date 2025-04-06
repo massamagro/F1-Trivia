@@ -180,5 +180,16 @@ class F1RepositoryImpl(
         return circuits
     }
 
+    override suspend fun getCircuitsBySeason(season: String): List<Circuit> {
+        val response = f1Service.getCircuitsBySeason(season)
+        val circuitDtos = response.mrData.circuitTable?.circuitDtos
+        if (circuitDtos != null) {
+            circuitDao.upsertAll(circuitDtos.map { it.toDomain().toDatabase() })
+            return circuitDtos.map { it.toDomain() }
+        } else {
+            return emptyList()
+        }
+    }
+
 
 }

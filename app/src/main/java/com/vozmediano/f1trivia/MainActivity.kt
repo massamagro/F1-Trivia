@@ -18,7 +18,13 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var optionsTv: List<TextView>
+
+    private var currentOptions: List<Option> = emptyList()
     private val viewModel: MainViewModel by viewModels { MainViewModel.Factory }
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -30,65 +36,68 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        optionsTv = listOf(binding.optionOneTv, binding.optionTwoTv, binding.optionThreeTv, binding.optionFourTv)
+
+        setupClickListeners()
+        observeQuestions()
+
         generateQuestion()
 
     }
 
-    private fun generateQuestion(){
+    private fun setupClickListeners() {
+        optionsTv.forEachIndexed { index, textView ->
+            textView.setOnClickListener {
+                checkAnswer(index)
+            }
+        }
+    }
 
-        val questionTv = binding.textView
-        val optionOne = binding.optionOne
-        val optionTwo = binding.optionTwo
-        val optionThree = binding.optionThree
-        val optionFour = binding.optionFour
-        resetButtons(listOf(optionOne, optionTwo, optionThree, optionFour))
-        viewModel.fetchQuestionDriverBySeasonAndCircuitAndPosition()
 
+    private fun observeQuestions() {
         lifecycleScope.launch {
             viewModel.question.collectLatest { question ->
                 question?.let {
                     Log.d("MainActivity", "Question: ${it.title}")
-                    questionTv.text = it.title
-                    optionOne.text = "${it.options[0].shortText}"
-                    optionTwo.text = "${it.options[1].shortText}"
-                    optionThree.text = "${it.options[2].shortText}"
-                    optionFour.text = "${it.options[3].shortText}"
-                    var optionsTv = listOf<TextView>(optionOne, optionTwo, optionThree, optionFour)
-
-                    optionOne.setOnClickListener {
-                        checkAnswer(question.options, optionsTv)
+                    binding.questionTv.text = it.title
+                    currentOptions = it.options
+                    resetButtons(optionsTv)
+                    optionsTv.forEachIndexed { index, textView ->
+                        textView.text = it.options[index].shortText
                     }
-                    optionTwo.setOnClickListener {
-                        checkAnswer(question.options, optionsTv)
-                    }
-                    optionThree.setOnClickListener {
-                        checkAnswer(question.options, optionsTv)
-                    }
-                    optionFour.setOnClickListener {
-                        checkAnswer(question.options, optionsTv)
-                    }
-
                 }
             }
-
         }
+    }
+
+    private fun generateQuestion() {
+        viewModel.fetchQuestionDriverBySeasonAndCircuitAndPosition()
     }
 
     //LISTENERS
-    private fun checkAnswer(options: List<Option>, optionsTv: List<TextView>) {
-        options.forEach() { option ->
-            if (option.isCorrect) {
-                optionsTv[option.id].setBackgroundColor(getColor(R.color.green))
-                generateQuestion()
-            } else {
-                optionsTv[option.id].setBackgroundColor(getColor(R.color.red))
-            }
-            optionsTv[option.id].isEnabled = false
+    private fun checkAnswer(selectedIndex: Int) {
+        val isCorrect = currentOptions[selectedIndex].isCorrect
+
+        currentOptions.forEachIndexed { index, option ->
+            val color = if (option.isCorrect) R.color.green else R.color.red
+            optionsTv[index].setBackgroundColor(getColor(color))
+            optionsTv[index].isEnabled = false
         }
+
+        if (isCorrect) {
+            binding.pointsValueTv.text =
+                (binding.pointsValueTv.text.toString().toInt() + 1).toString()
+        } else {
+            binding.pointsValueTv.text = "0"
+        }
+
         lifecycleScope.launch {
             delay(2000)
+            generateQuestion()
         }
     }
+
 
     private fun resetButtons(buttons: List<TextView>) {
         buttons.forEach { button ->

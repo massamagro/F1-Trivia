@@ -56,5 +56,10 @@ interface F1Service {
         @Query("offset") offset: Int
     ): MRDataResponse
 
+    @GET("{season}/circuits")
+    suspend fun getCircuitsBySeason(
+        @Path("season") season: String
+    ): MRDataResponse
+
 
 }
