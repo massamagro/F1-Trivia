@@ -143,7 +143,6 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
                             position = (2..3).random().toString()
                         }
 
-
                     }
 
                     try {
