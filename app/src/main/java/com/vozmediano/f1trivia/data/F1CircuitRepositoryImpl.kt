@@ -11,28 +11,33 @@ class F1CircuitRepositoryImpl(
     private val f1Service: F1Service,
     private val circuitDao: CircuitDao
 ) : F1CircuitRepository {
-    //CIRCUITS
     override suspend fun getCircuits(): List<Circuit> {
-        var offset = 0
-        val limit = 100
+        var circuits = mutableListOf<Circuit>()
+        try{
+            circuits = circuitDao.getCircuits().map { it.toDomain() }.toMutableList()
+        } catch (e: Exception) {
+            var offset = 0
+            val limit = 100
 
-        val circuits = mutableListOf<Circuit>()
-        while (true) {
-            try {
-                val response = f1Service.getCircuits(limit, offset)
-                val circuitDtos = response.mrData.circuitTable!!.circuitDtos!!
-                circuits.addAll(circuitDtos.map { it.toDomain() })
-                circuitDao.upsertAll(circuitDtos.map { it.toDomain().toDatabase() })
-                offset += limit
-                val totalCircuits = response.mrData.total?.toIntOrNull() ?: Int.MAX_VALUE
-                if (offset >= totalCircuits) {
+            circuits = mutableListOf<Circuit>()
+            while (true) {
+                try {
+                    val response = f1Service.getCircuits(limit, offset)
+                    val circuitDtos = response.mrData.circuitTable!!.circuitDtos!!
+                    circuits.addAll(circuitDtos.map { it.toDomain() })
+                    circuitDao.upsertAll(circuitDtos.map { it.toDomain().toDatabase() })
+                    offset += limit
+                    val totalCircuits = response.mrData.total?.toIntOrNull() ?: Int.MAX_VALUE
+                    if (offset >= totalCircuits) {
+                        break
+                    }
+
+                } catch (e: Exception) {
                     break
                 }
-
-            } catch (e: Exception) {
-                break
             }
         }
+
         return circuits
     }
 
