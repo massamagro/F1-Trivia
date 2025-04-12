@@ -20,28 +20,35 @@ class F1DriverRepositoryImpl(
     private val circuitDao: CircuitDao
 
 ) : F1DriverRepository {
-    //DRIVERS
     override suspend fun getDrivers(): List<Driver> {
-        var offset = 0
-        val limit = 100
+        var drivers = mutableListOf<Driver>()
+        return try{
+            drivers = driverDao.getDrivers().map { it.toDomain() }.toMutableList()
+            drivers
+        } catch (e: Exception) {
+            Log.i("Tests", "Error getting drivers from database: ${e.message}")
+            var offset = 0
+            val limit = 100
 
-        val drivers = mutableListOf<Driver>()
-        while (true) {
-            try {
-                val response = f1Service.getDrivers(limit, offset)
-                val driverDtos = response.mrData.driverTable!!.driverDtos!!
-                drivers.addAll(driverDtos.map { it.toDomain() })
-                driverDao.upsertAll(driverDtos.map { it.toDomain().toDatabase() })
-                offset += limit
-                val totalDrivers = response.mrData.total?.toIntOrNull() ?: Int.MAX_VALUE
-                if (offset >= totalDrivers) {
+            drivers = mutableListOf<Driver>()
+            while (true) {
+                try {
+                    val response = f1Service.getDrivers(limit, offset)
+                    val driverDtos = response.mrData.driverTable!!.driverDtos!!
+                    drivers.addAll(driverDtos.map { it.toDomain() })
+                    driverDao.upsertAll(driverDtos.map { it.toDomain().toDatabase() })
+                    offset += limit
+                    val totalDrivers = response.mrData.total?.toIntOrNull() ?: Int.MAX_VALUE
+                    if (offset >= totalDrivers) {
+                        break
+                    }
+                } catch (e: Exception) {
                     break
                 }
-            } catch (e: Exception) {
-                break
             }
+            drivers
         }
-        return drivers
+
 
     }
     override suspend fun getDriverById(driverId: String): Driver {
