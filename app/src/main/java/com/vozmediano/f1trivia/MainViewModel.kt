@@ -153,7 +153,6 @@ class MainViewModel(
                             position = (2..3).random().toString()
                         }
 
-
                     }
 
                     try {
