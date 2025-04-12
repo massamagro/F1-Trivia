@@ -97,7 +97,8 @@ class DriverBySeasonAndCircuitAndPositionUseCase(
             }
 
             try {
-                val distractor = f1Repository.getDriverBySeasonAndCircuitAndPosition(season, circuitId, position)
+                val distractor =
+                    f1Repository.getDriverBySeasonAndCircuitAndPosition(season, circuitId, position)
                 if (driverSet.contains(distractor.driverId)) continue
 
                 driverSet.add(distractor.driverId)
