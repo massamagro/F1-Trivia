@@ -12,13 +12,17 @@ import com.vozmediano.f1trivia.domain.model.f1.Constructor
 import com.vozmediano.f1trivia.domain.model.f1.Driver
 import com.vozmediano.f1trivia.domain.model.quiz.Option
 import com.vozmediano.f1trivia.domain.model.quiz.Question
+import com.vozmediano.f1trivia.domain.model.usecase.DriverBySeasonAndCircuitAndPositionUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
+class MainViewModel(
+    val f1Repository: F1Repository,
+    private val driverBySeasonAndCircuitAndPositionUseCase: DriverBySeasonAndCircuitAndPositionUseCase
+    ) : ViewModel() {
 
     //QUESTION
     private val _question = MutableStateFlow<Question?>(null)
@@ -47,8 +51,14 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
 
     //QUESTION
     fun fetchQuestionDriverBySeasonAndCircuitAndPosition() {
+        viewModelScope.launch{
+            _question.value = driverBySeasonAndCircuitAndPositionUseCase()
+        }
+    }
+
+  /*  fun fetchQuestionDriverBySeasonAndCircuitAndPosition() {
         viewModelScope.launch {
-            val correctSeason = (2023..2024).random().toString()
+            val correctSeason = (1960..2024).random().toString()
             val circuits = try {
                 f1Repository.getCircuitsBySeason(correctSeason)
             } catch (e: Exception) {
@@ -179,6 +189,7 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
             }
         }
     }
+*/
 
     fun fetchQuestionDriverByNationality() {
         viewModelScope.launch {
@@ -360,7 +371,9 @@ class MainViewModel(val f1Repository: F1Repository) : ViewModel() {
         val Factory = viewModelFactory {
             initializer {
                 val application = this[APPLICATION_KEY] as F1TriviaApplication
-                MainViewModel(application.f1Repository)
+                MainViewModel(
+                    application.f1Repository,
+                    DriverBySeasonAndCircuitAndPositionUseCase(application.f1Repository))
             }
         }
     }
