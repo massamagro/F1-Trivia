@@ -14,25 +14,33 @@ class F1ConstructorRepositoryImpl (
 ) : F1ConstructorRepository{
     //CONSTRUCTORS
     override suspend fun getConstructors(): List<Constructor> {
-        var offset = 0
-        val limit = 100
+        var constructors = mutableListOf<Constructor>()
+        try{
+            constructors = constructorDao.getConstructors().map { it.toDomain() }.toMutableList()
+            Log.i("Tests", "constructors found in database")
+            return constructors
+        } catch (e: Exception) {
+            var offset = 0
+            val limit = 100
 
-        val constructors = mutableListOf<Constructor>()
-        while (true) {
-            try {
-                val response = f1Service.getConstructors(limit, offset)
-                val constructorDtos = response.mrData.constructorTable!!.constructorDtos!!
-                constructors.addAll(constructorDtos.map { it.toDomain() })
-                constructorDao.upsertAll(constructorDtos.map { it.toDomain().toDatabase() })
-                offset += limit
-                val totalConstructors = response.mrData.total?.toIntOrNull() ?: Int.MAX_VALUE
-                if (offset >= totalConstructors) {
+            constructors = mutableListOf<Constructor>()
+            while (true) {
+                try {
+                    val response = f1Service.getConstructors(limit, offset)
+                    val constructorDtos = response.mrData.constructorTable!!.constructorDtos!!
+                    constructors.addAll(constructorDtos.map { it.toDomain() })
+                    constructorDao.upsertAll(constructorDtos.map { it.toDomain().toDatabase() })
+                    offset += limit
+                    val totalConstructors = response.mrData.total?.toIntOrNull() ?: Int.MAX_VALUE
+                    if (offset >= totalConstructors) {
+                        break
+                    }
+                } catch (e: Exception) {
                     break
                 }
-            } catch (e: Exception) {
-                break
             }
         }
+
         return constructors
     }
     override suspend fun getConstructorById(constructorId: String): Constructor {
