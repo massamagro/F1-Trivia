@@ -13,13 +13,14 @@ class F1CircuitRepositoryImpl(
 ) : F1CircuitRepository {
     override suspend fun getCircuits(): List<Circuit> {
         var circuits = mutableListOf<Circuit>()
-        try{
+        return try {
             circuits = circuitDao.getCircuits().map { it.toDomain() }.toMutableList()
+            circuits
         } catch (e: Exception) {
             var offset = 0
             val limit = 100
 
-            circuits = mutableListOf<Circuit>()
+
             while (true) {
                 try {
                     val response = f1Service.getCircuits(limit, offset)
@@ -27,7 +28,7 @@ class F1CircuitRepositoryImpl(
                     circuits.addAll(circuitDtos.map { it.toDomain() })
                     circuitDao.upsertAll(circuitDtos.map { it.toDomain().toDatabase() })
                     offset += limit
-                    val totalCircuits = response.mrData.total?.toIntOrNull() ?: Int.MAX_VALUE
+                    val totalCircuits = response.mrData.total.toIntOrNull() ?: Int.MAX_VALUE
                     if (offset >= totalCircuits) {
                         break
                     }
@@ -36,9 +37,10 @@ class F1CircuitRepositoryImpl(
                     break
                 }
             }
+            circuits
         }
 
-        return circuits
+
     }
 
     override suspend fun getCircuitsBySeason(season: String): List<Circuit> {

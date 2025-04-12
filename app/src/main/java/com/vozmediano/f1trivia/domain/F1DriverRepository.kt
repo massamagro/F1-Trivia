@@ -1,12 +1,9 @@
 package com.vozmediano.f1trivia.domain
 
-import com.vozmediano.f1trivia.domain.model.f1.Circuit
-import com.vozmediano.f1trivia.domain.model.f1.Constructor
 import com.vozmediano.f1trivia.domain.model.f1.Driver
 
 
 interface F1DriverRepository {
-    //DRIVERS
     suspend fun getDrivers(): List<Driver>
     suspend fun getDriverById(driverId: String): Driver
     suspend fun getDriversBySeason(season: String): List<Driver>

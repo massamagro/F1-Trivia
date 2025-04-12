@@ -1,8 +1,6 @@
 package com.vozmediano.f1trivia.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
 import com.vozmediano.f1trivia.data.local.entities.DriverEntity

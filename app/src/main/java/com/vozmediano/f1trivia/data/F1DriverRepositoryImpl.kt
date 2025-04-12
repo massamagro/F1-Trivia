@@ -1,36 +1,31 @@
 package com.vozmediano.f1trivia.data
 
 import android.util.Log
-import com.vozmediano.f1trivia.data.local.dao.CircuitDao
-import com.vozmediano.f1trivia.data.local.dao.ConstructorDao
 import com.vozmediano.f1trivia.data.local.dao.DriverDao
 import com.vozmediano.f1trivia.data.mappers.toDatabase
 import com.vozmediano.f1trivia.data.mappers.toDomain
 import com.vozmediano.f1trivia.data.network.api.F1Service
 
 import com.vozmediano.f1trivia.domain.F1DriverRepository
-import com.vozmediano.f1trivia.domain.model.f1.Circuit
 import com.vozmediano.f1trivia.domain.model.f1.Driver
-import com.vozmediano.f1trivia.domain.model.f1.Constructor
 
 
 class F1DriverRepositoryImpl(
     private val f1Service: F1Service,
-    private val driverDao: DriverDao,
-    private val circuitDao: CircuitDao
+    private val driverDao: DriverDao
 
 ) : F1DriverRepository {
     override suspend fun getDrivers(): List<Driver> {
-        var drivers = mutableListOf<Driver>()
-        return try{
-            drivers = driverDao.getDrivers().map { it.toDomain() }.toMutableList()
+
+        return try {
+            val drivers = driverDao.getDrivers().map { it.toDomain() }.toMutableList()
             drivers
         } catch (e: Exception) {
             Log.i("Tests", "Error getting drivers from database: ${e.message}")
             var offset = 0
             val limit = 100
 
-            drivers = mutableListOf<Driver>()
+            val drivers = mutableListOf<Driver>()
             while (true) {
                 try {
                     val response = f1Service.getDrivers(limit, offset)
@@ -38,7 +33,7 @@ class F1DriverRepositoryImpl(
                     drivers.addAll(driverDtos.map { it.toDomain() })
                     driverDao.upsertAll(driverDtos.map { it.toDomain().toDatabase() })
                     offset += limit
-                    val totalDrivers = response.mrData.total?.toIntOrNull() ?: Int.MAX_VALUE
+                    val totalDrivers = response.mrData.total.toIntOrNull() ?: Int.MAX_VALUE
                     if (offset >= totalDrivers) {
                         break
                     }
@@ -51,6 +46,7 @@ class F1DriverRepositoryImpl(
 
 
     }
+
     override suspend fun getDriverById(driverId: String): Driver {
         return try {
             driverDao.getDriver(driverId).toDomain()
@@ -69,6 +65,7 @@ class F1DriverRepositoryImpl(
 
         }
     }
+
     override suspend fun getDriversBySeason(season: String): List<Driver> {
         return try {
             val drivers =
@@ -86,24 +83,22 @@ class F1DriverRepositoryImpl(
             emptyList()
         }
     }
-    override suspend fun getDriverBySeasonAndCircuitAndPosition(season: String, circuit: String, position: String): Driver {
 
-            val response = f1Service.getDriverBySeasonAndCircuitAndPosition(season, circuit, position)
-            Log.i("Tests", "Response: $response")
-            val driver = response.mrData.raceTable?.racesDto
-                ?.firstOrNull()
-                ?.results
-                ?.firstOrNull()
-                ?.driverDto
-                ?.toDomain()
-            return driver
-                ?: throw Exception("Driver not found")
+    override suspend fun getDriverBySeasonAndCircuitAndPosition(
+        season: String,
+        circuit: String,
+        position: String
+    ): Driver {
+
+        val response = f1Service.getDriverBySeasonAndCircuitAndPosition(season, circuit, position)
+        Log.i("Tests", "Response: $response")
+        val driver = response.mrData.raceTable?.racesDto
+            ?.firstOrNull()
+            ?.results
+            ?.firstOrNull()
+            ?.driverDto
+            ?.toDomain()
+        return driver
+            ?: throw Exception("Driver not found")
     }
-
-
-
-
-
-
-
 }

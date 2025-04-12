@@ -19,7 +19,7 @@ class F1TriviaApplication : Application() {
     lateinit var f1ConstructorRepository: F1ConstructorRepositoryImpl
     lateinit var f1CircuitRepository: F1CircuitRepositoryImpl
 
-    fun getF1Service(): F1Service {
+    private fun getF1Service(): F1Service {
         val client = OkHttpClient.Builder()
             .build()
 
@@ -46,7 +46,7 @@ class F1TriviaApplication : Application() {
         val constructorDao = database.constructorDao()
         val circuitDao = database.circuitDao()
 
-        f1DriverRepository = F1DriverRepositoryImpl(service, driverDao, circuitDao)
+        f1DriverRepository = F1DriverRepositoryImpl(service, driverDao)
         f1ConstructorRepository = F1ConstructorRepositoryImpl(service, constructorDao)
         f1CircuitRepository = F1CircuitRepositoryImpl(service, circuitDao)
 

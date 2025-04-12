@@ -6,7 +6,7 @@ import com.vozmediano.f1trivia.domain.model.f1.Circuit
 
 fun CircuitDto.toDomain() = Circuit(
     circuitId = circuitId,
-    url = url ?: "",
+    url = url,
     circuitName = circuitName,
     location = location.toDomain()
 )

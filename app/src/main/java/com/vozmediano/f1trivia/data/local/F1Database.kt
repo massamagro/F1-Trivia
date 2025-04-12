@@ -8,7 +8,6 @@ import com.vozmediano.f1trivia.data.local.dao.DriverDao
 import com.vozmediano.f1trivia.data.local.entities.CircuitEntity
 import com.vozmediano.f1trivia.data.local.entities.ConstructorEntity
 import com.vozmediano.f1trivia.data.local.entities.DriverEntity
-import com.vozmediano.f1trivia.data.local.entities.LocationEntity
 
 @Database(
     entities =

@@ -88,8 +88,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (isCorrect) {
-            binding.pointsValueTv.text =
-                (binding.pointsValueTv.text.toString().toInt() + 1).toString()
+            //binding.pointsValueTv.text = (binding.pointsValueTv.text.toString().toInt() + 1).toString()
+            (binding.pointsValueTv.text.toString().toInt() + 1).toString()
+                .also { binding.pointsValueTv.text = it }
         } else {
             binding.pointsValueTv.text = "0"
         }

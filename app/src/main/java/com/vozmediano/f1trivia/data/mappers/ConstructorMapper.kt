@@ -6,9 +6,9 @@ import com.vozmediano.f1trivia.domain.model.f1.Constructor
 
 fun ConstructorDto.toDomain() = Constructor(
     constructorId = constructorId,
-    url = url ?: "",
+    url = url,
     name = name,
-    nationality = nationality ?: ""
+    nationality = nationality
 )
 
 fun Constructor.toDatabase() = ConstructorEntity(

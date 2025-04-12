@@ -12,18 +12,17 @@ class F1ConstructorRepositoryImpl (
     private val f1Service: F1Service,
     private val constructorDao: ConstructorDao
 ) : F1ConstructorRepository{
-    //CONSTRUCTORS
+
     override suspend fun getConstructors(): List<Constructor> {
         var constructors = mutableListOf<Constructor>()
-        try{
+        return try{
             constructors = constructorDao.getConstructors().map { it.toDomain() }.toMutableList()
             Log.i("Tests", "constructors found in database")
-            return constructors
+            constructors
         } catch (e: Exception) {
             var offset = 0
             val limit = 100
 
-            constructors = mutableListOf<Constructor>()
             while (true) {
                 try {
                     val response = f1Service.getConstructors(limit, offset)
@@ -31,7 +30,7 @@ class F1ConstructorRepositoryImpl (
                     constructors.addAll(constructorDtos.map { it.toDomain() })
                     constructorDao.upsertAll(constructorDtos.map { it.toDomain().toDatabase() })
                     offset += limit
-                    val totalConstructors = response.mrData.total?.toIntOrNull() ?: Int.MAX_VALUE
+                    val totalConstructors = response.mrData.total.toIntOrNull() ?: Int.MAX_VALUE
                     if (offset >= totalConstructors) {
                         break
                     }
@@ -39,9 +38,10 @@ class F1ConstructorRepositoryImpl (
                     break
                 }
             }
+            constructors
         }
 
-        return constructors
+
     }
     override suspend fun getConstructorById(constructorId: String): Constructor {
         return try {
