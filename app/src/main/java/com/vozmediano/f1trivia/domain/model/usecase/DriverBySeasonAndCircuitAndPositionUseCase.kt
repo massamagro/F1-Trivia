@@ -1,6 +1,7 @@
 package com.vozmediano.f1trivia.domain.model.usecase
 
 import android.util.Log
+import com.vozmediano.f1trivia.domain.F1CircuitRepository
 import com.vozmediano.f1trivia.domain.F1DriverRepository
 import com.vozmediano.f1trivia.domain.model.quiz.Option
 import com.vozmediano.f1trivia.domain.model.quiz.Question
@@ -8,13 +9,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DriverBySeasonAndCircuitAndPositionUseCase(
-    private val f1DriverRepository: F1DriverRepository
+    private val f1DriverRepository: F1DriverRepository,
+    private val f1CircuitRepository: F1CircuitRepository
 ) {
     suspend operator fun invoke(): Question? = withContext(Dispatchers.IO) {
         val correctSeason = (1960..2024).random().toString()
 
         val circuits = try {
-            f1DriverRepository.getCircuitsBySeason(correctSeason)
+            f1CircuitRepository.getCircuitsBySeason(correctSeason)
         } catch (e: Exception) {
             return@withContext null
         }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.vozmediano.f1trivia.domain.F1CircuitRepository
 import com.vozmediano.f1trivia.domain.F1ConstructorRepository
 import com.vozmediano.f1trivia.domain.F1DriverRepository
 import com.vozmediano.f1trivia.domain.model.f1.Circuit
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     val f1DriverRepository: F1DriverRepository,
     val f1ConstructorRepository: F1ConstructorRepository,
+    val f1CircuitRepository: F1CircuitRepository,
     private val driverBySeasonAndCircuitAndPositionUseCase: DriverBySeasonAndCircuitAndPositionUseCase,
     private val driverByNationalityUseCase: DriverByNationalityUseCase
     ) : ViewModel() {
@@ -175,7 +177,7 @@ class MainViewModel(
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val circuits = f1DriverRepository.getCircuits()
+                val circuits = f1CircuitRepository.getCircuits()
                 _circuits.value = circuits
             } catch (e: retrofit2.HttpException) {
                 Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
@@ -188,7 +190,7 @@ class MainViewModel(
     fun fetchCircuitsBySeason(season: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val circuits = f1DriverRepository.getCircuitsBySeason(season)
+                val circuits = f1CircuitRepository.getCircuitsBySeason(season)
                 _circuits.value = circuits
             } catch (e: retrofit2.HttpException) {
                 Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
@@ -205,7 +207,8 @@ class MainViewModel(
                 MainViewModel(
                     application.f1DriverRepository,
                     application.f1ConstructorRepository,
-                    DriverBySeasonAndCircuitAndPositionUseCase(application.f1DriverRepository),
+                    application.f1CircuitRepository,
+                    DriverBySeasonAndCircuitAndPositionUseCase(application.f1DriverRepository, application.f1CircuitRepository),
                     DriverByNationalityUseCase(application.f1DriverRepository)
                 )
             }

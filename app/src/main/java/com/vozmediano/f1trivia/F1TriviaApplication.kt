@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.vozmediano.f1trivia.data.F1CircuitRepositoryImpl
 import com.vozmediano.f1trivia.data.F1ConstructorRepositoryImpl
 import com.vozmediano.f1trivia.data.F1DriverRepositoryImpl
 import com.vozmediano.f1trivia.data.local.F1Database
@@ -16,6 +17,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 class F1TriviaApplication : Application() {
     lateinit var f1DriverRepository: F1DriverRepository
     lateinit var f1ConstructorRepository: F1ConstructorRepositoryImpl
+    lateinit var f1CircuitRepository: F1CircuitRepositoryImpl
 
     fun getF1Service(): F1Service {
         val client = OkHttpClient.Builder()
@@ -46,6 +48,8 @@ class F1TriviaApplication : Application() {
 
         f1DriverRepository = F1DriverRepositoryImpl(service, driverDao, circuitDao)
         f1ConstructorRepository = F1ConstructorRepositoryImpl(service, constructorDao)
+        f1CircuitRepository = F1CircuitRepositoryImpl(service, circuitDao)
+
 
     }
 }

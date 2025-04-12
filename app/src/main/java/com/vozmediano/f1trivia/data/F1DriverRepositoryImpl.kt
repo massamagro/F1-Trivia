@@ -96,41 +96,7 @@ class F1DriverRepositoryImpl(
 
 
 
-    //CIRCUITS
-    override suspend fun getCircuits(): List<Circuit> {
-        var offset = 0
-        val limit = 100
 
-        val circuits = mutableListOf<Circuit>()
-        while (true) {
-            try {
-                val response = f1Service.getCircuits(limit, offset)
-                val circuitDtos = response.mrData.circuitTable!!.circuitDtos!!
-                circuits.addAll(circuitDtos.map { it.toDomain() })
-                circuitDao.upsertAll(circuitDtos.map { it.toDomain().toDatabase() })
-                offset += limit
-                val totalCircuits = response.mrData.total?.toIntOrNull() ?: Int.MAX_VALUE
-                if (offset >= totalCircuits) {
-                    break
-                }
-
-            } catch (e: Exception) {
-                break
-            }
-        }
-        return circuits
-    }
-
-    override suspend fun getCircuitsBySeason(season: String): List<Circuit> {
-        val response = f1Service.getCircuitsBySeason(season)
-        val circuitDtos = response.mrData.circuitTable?.circuitDtos
-        if (circuitDtos != null) {
-            circuitDao.upsertAll(circuitDtos.map { it.toDomain().toDatabase() })
-            return circuitDtos.map { it.toDomain() }
-        } else {
-            return emptyList()
-        }
-    }
 
 
 }
