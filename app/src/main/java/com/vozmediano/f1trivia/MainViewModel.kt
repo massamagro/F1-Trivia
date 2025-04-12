@@ -6,11 +6,11 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.vozmediano.f1trivia.domain.F1Repository
+import com.vozmediano.f1trivia.domain.F1ConstructorRepository
+import com.vozmediano.f1trivia.domain.F1DriverRepository
 import com.vozmediano.f1trivia.domain.model.f1.Circuit
 import com.vozmediano.f1trivia.domain.model.f1.Constructor
 import com.vozmediano.f1trivia.domain.model.f1.Driver
-import com.vozmediano.f1trivia.domain.model.quiz.Option
 import com.vozmediano.f1trivia.domain.model.quiz.Question
 import com.vozmediano.f1trivia.domain.model.usecase.DriverByNationalityUseCase
 import com.vozmediano.f1trivia.domain.model.usecase.DriverBySeasonAndCircuitAndPositionUseCase
@@ -21,7 +21,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    val f1Repository: F1Repository,
+    val f1DriverRepository: F1DriverRepository,
+    val f1ConstructorRepository: F1ConstructorRepository,
     private val driverBySeasonAndCircuitAndPositionUseCase: DriverBySeasonAndCircuitAndPositionUseCase,
     private val driverByNationalityUseCase: DriverByNationalityUseCase
     ) : ViewModel() {
@@ -69,7 +70,7 @@ class MainViewModel(
     fun fetchDrivers() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val drivers = f1Repository.getDrivers()
+                val drivers = f1DriverRepository.getDrivers()
                 _drivers.value = drivers
                 Log.i("Tests", "Drivers: $drivers")
             } catch (e: retrofit2.HttpException) {
@@ -83,7 +84,7 @@ class MainViewModel(
     fun fetchDriverById(driverId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val driver = f1Repository.getDriverById(driverId)
+                val driver = f1DriverRepository.getDriverById(driverId)
                 _driver.value = driver
                 Log.i("Tests", "(VM) Driver: $driver")
             } catch (e: retrofit2.HttpException) {
@@ -97,7 +98,7 @@ class MainViewModel(
     fun fetchDriversBySeason(season: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val drivers = f1Repository.getDriversBySeason(season)
+                val drivers = f1DriverRepository.getDriversBySeason(season)
                 _drivers.value = drivers
                 Log.i("Tests", "Drivers: $drivers")
             } catch (e: retrofit2.HttpException) {
@@ -116,7 +117,7 @@ class MainViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val driver =
-                    f1Repository.getDriverBySeasonAndCircuitAndPosition(season, circuit, position)
+                    f1DriverRepository.getDriverBySeasonAndCircuitAndPosition(season, circuit, position)
                 _driver.value = driver
             } catch (e: Exception) {
                 Log.i("Tests", "Error fetching driver: ${e.message.orEmpty()}")
@@ -129,7 +130,7 @@ class MainViewModel(
     fun fetchConstructors() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val constructors = f1Repository.getConstructors()
+                val constructors = f1ConstructorRepository.getConstructors()
                 _constructors.value = constructors
                 Log.i("Tests", "Constructors: $constructors")
             } catch (e: retrofit2.HttpException) {
@@ -144,7 +145,7 @@ class MainViewModel(
     fun fetchConstructorById(constructorId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val constructor = f1Repository.getConstructorById(constructorId)
+                val constructor = f1ConstructorRepository.getConstructorById(constructorId)
                 _constructor.value = constructor
                 Log.i("Tests", "Constructor: $constructor")
             } catch (e: retrofit2.HttpException) {
@@ -158,7 +159,7 @@ class MainViewModel(
     fun fetchConstructorsBySeason(season: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val constructors = f1Repository.getConstructorsBySeason(season)
+                val constructors = f1ConstructorRepository.getConstructorsBySeason(season)
                 _constructors.value = constructors
                 Log.i("Tests", "Constructors: $constructors")
             } catch (e: retrofit2.HttpException) {
@@ -174,7 +175,7 @@ class MainViewModel(
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val circuits = f1Repository.getCircuits()
+                val circuits = f1DriverRepository.getCircuits()
                 _circuits.value = circuits
             } catch (e: retrofit2.HttpException) {
                 Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
@@ -187,7 +188,7 @@ class MainViewModel(
     fun fetchCircuitsBySeason(season: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val circuits = f1Repository.getCircuitsBySeason(season)
+                val circuits = f1DriverRepository.getCircuitsBySeason(season)
                 _circuits.value = circuits
             } catch (e: retrofit2.HttpException) {
                 Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
@@ -202,9 +203,10 @@ class MainViewModel(
             initializer {
                 val application = this[APPLICATION_KEY] as F1TriviaApplication
                 MainViewModel(
-                    application.f1Repository,
-                    DriverBySeasonAndCircuitAndPositionUseCase(application.f1Repository),
-                    DriverByNationalityUseCase(application.f1Repository)
+                    application.f1DriverRepository,
+                    application.f1ConstructorRepository,
+                    DriverBySeasonAndCircuitAndPositionUseCase(application.f1DriverRepository),
+                    DriverByNationalityUseCase(application.f1DriverRepository)
                 )
             }
         }

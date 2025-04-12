@@ -1,17 +1,17 @@
 package com.vozmediano.f1trivia.domain.model.usecase
 
-import com.vozmediano.f1trivia.domain.F1Repository
+import com.vozmediano.f1trivia.domain.F1DriverRepository
 import com.vozmediano.f1trivia.domain.model.quiz.Option
 import com.vozmediano.f1trivia.domain.model.quiz.Question
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DriverByNationalityUseCase(
-    private val f1Repository: F1Repository
+    private val f1DriverRepository: F1DriverRepository
 ) {
     suspend operator fun invoke(): Question? = withContext(Dispatchers.IO) {
         val drivers = try {
-            f1Repository.getDrivers()
+            f1DriverRepository.getDrivers()
         } catch (e: Exception) {
             return@withContext null
         }

@@ -5,7 +5,7 @@ import com.vozmediano.f1trivia.domain.model.f1.Constructor
 import com.vozmediano.f1trivia.domain.model.f1.Driver
 
 
-interface F1Repository {
+interface F1DriverRepository {
     //DRIVERS
     suspend fun getDrivers(): List<Driver>
     suspend fun getDriverById(driverId: String): Driver
@@ -17,10 +17,7 @@ interface F1Repository {
     ): Driver
 
 
-    //CONSTRUCTORS
-    suspend fun getConstructors(): List<Constructor>
-    suspend fun getConstructorById(constructorId: String): Constructor
-    suspend fun getConstructorsBySeason(season: String): List<Constructor>
+
 
 
     //CIRCUITS

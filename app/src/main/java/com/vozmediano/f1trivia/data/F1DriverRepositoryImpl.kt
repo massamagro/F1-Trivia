@@ -8,19 +8,18 @@ import com.vozmediano.f1trivia.data.mappers.toDatabase
 import com.vozmediano.f1trivia.data.mappers.toDomain
 import com.vozmediano.f1trivia.data.network.api.F1Service
 
-import com.vozmediano.f1trivia.domain.F1Repository
+import com.vozmediano.f1trivia.domain.F1DriverRepository
 import com.vozmediano.f1trivia.domain.model.f1.Circuit
 import com.vozmediano.f1trivia.domain.model.f1.Driver
 import com.vozmediano.f1trivia.domain.model.f1.Constructor
 
 
-class F1RepositoryImpl(
+class F1DriverRepositoryImpl(
     private val f1Service: F1Service,
     private val driverDao: DriverDao,
-    private val constructorDao: ConstructorDao,
     private val circuitDao: CircuitDao
 
-) : F1Repository {
+) : F1DriverRepository {
     //DRIVERS
     override suspend fun getDrivers(): List<Driver> {
         var offset = 0
@@ -95,65 +94,7 @@ class F1RepositoryImpl(
     }
 
 
-    //CONSTRUCTORS
-    override suspend fun getConstructors(): List<Constructor> {
-        var offset = 0
-        val limit = 100
 
-        val constructors = mutableListOf<Constructor>()
-        while (true) {
-            try {
-                val response = f1Service.getConstructors(limit, offset)
-                val constructorDtos = response.mrData.constructorTable!!.constructorDtos!!
-                constructors.addAll(constructorDtos.map { it.toDomain() })
-                constructorDao.upsertAll(constructorDtos.map { it.toDomain().toDatabase() })
-                offset += limit
-                val totalConstructors = response.mrData.total?.toIntOrNull() ?: Int.MAX_VALUE
-                if (offset >= totalConstructors) {
-                    break
-                }
-            } catch (e: Exception) {
-                break
-            }
-        }
-        return constructors
-    }
-    override suspend fun getConstructorById(constructorId: String): Constructor {
-        return try {
-            val constructor = constructorDao.getConstructor(constructorId).toDomain()
-            Log.i("Tests", "constructor found in database")
-            constructor
-
-        } catch (e: Exception) {
-           val constructor = f1Service
-                .getConstructorById(constructorId)
-                .mrData
-                .constructorTable!!
-                .constructorDtos!!
-                .first()
-                .toDomain()
-        Log.i("Tests", "constructor fetched from api: $constructor")
-        constructorDao.upsert(constructor.toDatabase())
-        constructor
-    }
-}
-    override suspend fun getConstructorsBySeason(season: String): List<Constructor> {
-        return try {
-            val constructors =
-                f1Service
-                    .getConstructorsBySeason(season)
-                    .mrData
-                    .constructorTable!!
-                    .constructorDtos!!
-                    .map { it.toDomain() }
-
-            constructorDao.upsertAll(constructors.map { it.toDatabase() })
-            constructors
-
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
 
     //CIRCUITS
     override suspend fun getCircuits(): List<Circuit> {

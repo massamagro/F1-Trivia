@@ -1,20 +1,20 @@
 package com.vozmediano.f1trivia.domain.model.usecase
 
 import android.util.Log
-import com.vozmediano.f1trivia.domain.F1Repository
+import com.vozmediano.f1trivia.domain.F1DriverRepository
 import com.vozmediano.f1trivia.domain.model.quiz.Option
 import com.vozmediano.f1trivia.domain.model.quiz.Question
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DriverBySeasonAndCircuitAndPositionUseCase(
-    private val f1Repository: F1Repository
+    private val f1DriverRepository: F1DriverRepository
 ) {
     suspend operator fun invoke(): Question? = withContext(Dispatchers.IO) {
         val correctSeason = (1960..2024).random().toString()
 
         val circuits = try {
-            f1Repository.getCircuitsBySeason(correctSeason)
+            f1DriverRepository.getCircuitsBySeason(correctSeason)
         } catch (e: Exception) {
             return@withContext null
         }
@@ -25,7 +25,7 @@ class DriverBySeasonAndCircuitAndPositionUseCase(
         val correctPosition = "1"
 
         val correctDriver = try {
-            f1Repository.getDriverBySeasonAndCircuitAndPosition(
+            f1DriverRepository.getDriverBySeasonAndCircuitAndPosition(
                 correctSeason,
                 correctCircuit.circuitId,
                 correctPosition
@@ -98,7 +98,7 @@ class DriverBySeasonAndCircuitAndPositionUseCase(
 
             try {
                 val distractor =
-                    f1Repository.getDriverBySeasonAndCircuitAndPosition(season, circuitId, position)
+                    f1DriverRepository.getDriverBySeasonAndCircuitAndPosition(season, circuitId, position)
                 if (driverSet.contains(distractor.driverId)) continue
 
                 driverSet.add(distractor.driverId)
