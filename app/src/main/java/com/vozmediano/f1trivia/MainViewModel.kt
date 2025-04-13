@@ -14,7 +14,7 @@ import com.vozmediano.f1trivia.domain.model.f1.Constructor
 import com.vozmediano.f1trivia.domain.model.f1.Driver
 import com.vozmediano.f1trivia.domain.model.quiz.Question
 import com.vozmediano.f1trivia.domain.model.usecase.DriverByNationalityUseCase
-import com.vozmediano.f1trivia.domain.model.usecase.DriverBySeasonAndCircuitAndPositionUseCase
+import com.vozmediano.f1trivia.domain.model.usecase.WhoWonAtCircuitAndSeasonUseCase
 import com.vozmediano.f1trivia.domain.model.usecase.MostWinsByCircuitUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +26,7 @@ class MainViewModel(
     val f1DriverRepository: F1DriverRepository,
     val f1ConstructorRepository: F1ConstructorRepository,
     val f1CircuitRepository: F1CircuitRepository,
-    private val driverBySeasonAndCircuitAndPositionUseCase: DriverBySeasonAndCircuitAndPositionUseCase,
+    private val whoWonAtCircuitAndSeasonUseCase: WhoWonAtCircuitAndSeasonUseCase,
     private val driverByNationalityUseCase: DriverByNationalityUseCase,
     private val mostWinsByCircuitUseCase: MostWinsByCircuitUseCase
     ) : ViewModel() {
@@ -59,7 +59,7 @@ class MainViewModel(
     //QUESTION
     fun fetchQuestionDriverBySeasonAndCircuitAndPosition() {
         viewModelScope.launch{
-            _question.value = driverBySeasonAndCircuitAndPositionUseCase()
+            _question.value = whoWonAtCircuitAndSeasonUseCase()
         }
     }
 
@@ -218,7 +218,7 @@ class MainViewModel(
                     application.f1DriverRepository,
                     application.f1ConstructorRepository,
                     application.f1CircuitRepository,
-                    DriverBySeasonAndCircuitAndPositionUseCase(application.f1DriverRepository, application.f1CircuitRepository),
+                    WhoWonAtCircuitAndSeasonUseCase(application.f1DriverRepository, application.f1CircuitRepository),
                     DriverByNationalityUseCase(application.f1DriverRepository),
                     MostWinsByCircuitUseCase(application.f1RaceRepository, application.f1CircuitRepository)
                 )

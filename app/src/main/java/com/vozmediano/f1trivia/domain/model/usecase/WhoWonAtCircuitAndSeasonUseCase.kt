@@ -8,7 +8,7 @@ import com.vozmediano.f1trivia.domain.model.quiz.Question
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class DriverBySeasonAndCircuitAndPositionUseCase(
+class WhoWonAtCircuitAndSeasonUseCase(
     private val f1DriverRepository: F1DriverRepository,
     private val f1CircuitRepository: F1CircuitRepository
 ) {
@@ -16,15 +16,15 @@ class DriverBySeasonAndCircuitAndPositionUseCase(
         val correctSeason = (1960..2024).random().toString()
 
         val circuits = try {
-            Log.i("DriverBySeasonAndCircuitAndPositionUseCase", "Fetching circuits")
+            Log.i("WhoWonAtCircuitAndSeasonUseCase", "Fetching circuits")
             f1CircuitRepository.getCircuitsBySeason(correctSeason)
         } catch (e: Exception) {
-            Log.i("DriverBySeasonAndCircuitAndPositionUseCase", "Error fetching circuits: ${e.message}")
+            Log.i("WhoWonAtCircuitAndSeasonUseCase", "Error fetching circuits: ${e.message}")
             return@withContext null
         }
 
         if (circuits.isEmpty()) {
-            Log.i("DriverBySeasonAndCircuitAndPositionUseCase", "No circuits found for season $correctSeason")
+            Log.i("WhoWonAtCircuitAndSeasonUseCase", "No circuits found for season $correctSeason")
             return@withContext null
         }
 
@@ -32,14 +32,14 @@ class DriverBySeasonAndCircuitAndPositionUseCase(
         val correctPosition = "1"
 
         val correctDriver = try {
-            Log.i("DriverBySeasonAndCircuitAndPositionUseCase", "Fetching driver")
+            Log.i("WhoWonAtCircuitAndSeasonUseCase", "Fetching driver")
             f1DriverRepository.getDriverBySeasonAndCircuitAndPosition(
                 correctSeason,
                 correctCircuit.circuitId,
                 correctPosition
             )
         } catch (e: Exception) {
-            Log.i("DriverBySeasonAndCircuitAndPositionUseCase", "Error fetching driver: ${e.message}")
+            Log.i("WhoWonAtCircuitAndSeasonUseCase", "Error fetching driver: ${e.message}")
             return@withContext null
         }
 
@@ -68,14 +68,14 @@ class DriverBySeasonAndCircuitAndPositionUseCase(
             when ((1..5).random()) {
                 //Same circuit, different season
                 1 -> {
-                    Log.i("DriverBySeasonAndCircuitAndPositionUseCase", "Same circuit, different season")
+                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "Same circuit, different season")
                     season = correctSeason + (-2..2).random()
                     circuitId = correctCircuit.circuitId
                     position = "1"
                 }
                 //Different circuit, same season
                 2 -> {
-                    Log.i("DriverBySeasonAndCircuitAndPositionUseCase", "Different circuit, same season")
+                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "Different circuit, same season")
                     season = correctSeason
                     circuitId = circuits.filter { it.circuitId != correctCircuit.circuitId }
                         .random().circuitId
@@ -83,21 +83,21 @@ class DriverBySeasonAndCircuitAndPositionUseCase(
                 }
                 //Same circuit, same season, 2nd position
                 3 -> {
-                    Log.i("DriverBySeasonAndCircuitAndPositionUseCase", "Same circuit, same season, 2nd position")
+                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "Same circuit, same season, 2nd position")
                     season = correctSeason
                     circuitId = correctCircuit.circuitId
                     position = "2"
                 }
                 //Same circuit, same season, 3rd position
                 4 -> {
-                    Log.i("DriverBySeasonAndCircuitAndPositionUseCase", "Same circuit, same season, 3rd position")
+                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "Same circuit, same season, 3rd position")
                     season = correctSeason
                     circuitId = correctCircuit.circuitId
                     position = "3"
                 }
                 //Different race, same year, podium position
                 5 -> {
-                    Log.i("DriverBySeasonAndCircuitAndPositionUseCase", "Different race, same year, podium position")
+                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "Different race, same year, podium position")
                     season = correctSeason
                     circuitId = circuits.filter { it.circuitId != correctCircuit.circuitId }
                         .random().circuitId
