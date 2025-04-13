@@ -1,5 +1,6 @@
 package com.vozmediano.f1trivia.domain.model.f1
 
 data class Time(
-    val time: String
+    val time: String,
+    val millis : String ? = null
 )

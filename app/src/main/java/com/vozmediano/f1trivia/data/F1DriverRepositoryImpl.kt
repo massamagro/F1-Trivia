@@ -16,16 +16,28 @@ class F1DriverRepositoryImpl(
 
 ) : F1DriverRepository {
     override suspend fun getDrivers(): List<Driver> {
+        var drivers = mutableListOf<Driver>()
+        try {
+            driverDao.getDrivers()
+                .map { it.toDomain() }
+                .also {
+                    drivers = it.toMutableList()
+                    Log.i("F1DriverRepositoryImpl", "${drivers.size} drivers found in database")
+                }
+            if (drivers.size > 0) {
+                Log.i("F1DriverRepositoryImpl", "returning ${drivers.size} drivers")
+                return drivers
+            } else {
+                Log.i("F1DriverRepositoryImpl", "No drivers found in database")
+                throw Exception("No drivers found in database")
+            }
 
-        return try {
-            val drivers = driverDao.getDrivers().map { it.toDomain() }.toMutableList()
-            drivers
         } catch (e: Exception) {
-            Log.i("Tests", "Error getting drivers from database: ${e.message}")
+            Log.i("F1DriverRepositoryImpl", "No drivers found in database, fetching from API")
+            Log.i("F1DriverRepositoryImpl", "Error: ${e.message}")
             var offset = 0
             val limit = 100
 
-            val drivers = mutableListOf<Driver>()
             while (true) {
                 try {
                     val response = f1Service.getDrivers(limit, offset)
@@ -38,13 +50,12 @@ class F1DriverRepositoryImpl(
                         break
                     }
                 } catch (e: Exception) {
+                    Log.i("F1DriverRepositoryImpl", "Error fetching from API: ${e.message}")
                     break
                 }
             }
-            drivers
         }
-
-
+        return drivers
     }
 
     override suspend fun getDriverById(driverId: String): Driver {
@@ -91,7 +102,7 @@ class F1DriverRepositoryImpl(
     ): Driver {
 
         val response = f1Service.getDriverBySeasonAndCircuitAndPosition(season, circuit, position)
-        Log.i("Tests", "Response: $response")
+        Log.i("F1DriverRepositoryImpl", "Response: $response")
         val driver = response.mrData.raceTable?.racesDto
             ?.firstOrNull()
             ?.results

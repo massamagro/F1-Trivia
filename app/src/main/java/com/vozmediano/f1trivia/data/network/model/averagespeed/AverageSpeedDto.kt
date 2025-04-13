@@ -4,6 +4,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class AverageSpeedDto (
-    val units: String ? = null,
-    val speed: String ? = null
+    val units: String,
+    val speed: String
 )

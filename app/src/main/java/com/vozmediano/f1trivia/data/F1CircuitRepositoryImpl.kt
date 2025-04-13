@@ -1,5 +1,6 @@
 package com.vozmediano.f1trivia.data
 
+import android.util.Log
 import com.vozmediano.f1trivia.data.local.dao.CircuitDao
 import com.vozmediano.f1trivia.data.mappers.toDatabase
 import com.vozmediano.f1trivia.data.mappers.toDomain
@@ -13,13 +14,24 @@ class F1CircuitRepositoryImpl(
 ) : F1CircuitRepository {
     override suspend fun getCircuits(): List<Circuit> {
         var circuits = mutableListOf<Circuit>()
-        return try {
-            circuits = circuitDao.getCircuits().map { it.toDomain() }.toMutableList()
-            circuits
+        try {
+            circuitDao.getCircuits()
+                .map { it.toDomain() }
+                .also {
+                    circuits = it.toMutableList()
+                    Log.i("F1CircuitRepositoryImpl", "${circuits.size} circuits found in database")
+                }
+            if (circuits.size > 0) {
+                Log.i("F1CircuitRepositoryImpl", "returning ${circuits.size} circuits")
+                return circuits
+            } else {
+                throw Exception("No circuits found in database")
+            }
         } catch (e: Exception) {
+            Log.i("F1CircuitRepositoryImpl", "No circuits found in database, fetching from API")
+            Log.i("F1CircuitRepositoryImpl", "Error: ${e.message}")
             var offset = 0
             val limit = 100
-
 
             while (true) {
                 try {
@@ -34,13 +46,12 @@ class F1CircuitRepositoryImpl(
                     }
 
                 } catch (e: Exception) {
+                    Log.i("F1CircuitRepositoryImpl", "Error fetching from API: ${e.message}")
                     break
                 }
             }
-            circuits
         }
-
-
+        return circuits
     }
 
     override suspend fun getCircuitsBySeason(season: String): List<Circuit> {

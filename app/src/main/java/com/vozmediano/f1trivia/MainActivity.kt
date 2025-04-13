@@ -23,8 +23,6 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels { MainViewModel.Factory }
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
@@ -36,7 +34,12 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        optionsTv = listOf(binding.optionOneTv, binding.optionTwoTv, binding.optionThreeTv, binding.optionFourTv)
+        optionsTv = listOf(
+            binding.optionOneTv,
+            binding.optionTwoTv,
+            binding.optionThreeTv,
+            binding.optionFourTv
+        )
 
         setupClickListeners()
         observeQuestions()
@@ -64,6 +67,7 @@ class MainActivity : AppCompatActivity() {
                     resetButtons(optionsTv)
                     optionsTv.forEachIndexed { index, textView ->
                         textView.text = it.options[index].shortText
+
                     }
                 }
             }
@@ -71,21 +75,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun generateQuestion() {
-        when((1..2).random()){
-        1 -> viewModel.fetchQuestionDriverBySeasonAndCircuitAndPosition()
-        2 -> viewModel.fetchQuestionDriverByNationality()
+        when ((1..1).random()) {
+            1 -> viewModel.fetchQuestionDriverBySeasonAndCircuitAndPosition()
+            2 -> viewModel.fetchQuestionDriverByNationality()
         }
     }
 
     //LISTENERS
     private fun checkAnswer(selectedIndex: Int) {
         val isCorrect = currentOptions[selectedIndex].isCorrect
+        optionsTv[selectedIndex].setBackgroundColor(
+            if (isCorrect) {
+                getColor(R.color.green)
+            } else {
+                getColor(R.color.red)
+            }
+        )
 
         currentOptions.forEachIndexed { index, option ->
-            val color = if (option.isCorrect) R.color.green else R.color.red
-            optionsTv[index].setBackgroundColor(getColor(color))
+            if (option.isCorrect) {
+                binding.questionTv.text = option.longText
+            }
             optionsTv[index].isEnabled = false
         }
+
 
         if (isCorrect) {
             //binding.pointsValueTv.text = (binding.pointsValueTv.text.toString().toInt() + 1).toString()

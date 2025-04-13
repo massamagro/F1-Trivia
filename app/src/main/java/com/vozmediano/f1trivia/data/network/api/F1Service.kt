@@ -61,5 +61,13 @@ interface F1Service {
         @Path("season") season: String
     ): MRDataResponse
 
+    //RACES
+    @GET("/circuits/{circuitId}/results/{position}")
+    suspend fun getRacesByCircuitAndPosition(
+        @Path("circuitId") circuitId: String,
+        @Path("position") position: String,
+        @Query("limit") limit: Int
+    ): MRDataResponse
+
 
 }

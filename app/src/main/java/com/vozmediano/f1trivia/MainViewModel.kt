@@ -74,11 +74,11 @@ class MainViewModel(
             try {
                 val drivers = f1DriverRepository.getDrivers()
                 _drivers.value = drivers
-                Log.i("Tests", "Drivers: $drivers")
+                Log.i("MainViewModel", "Drivers: $drivers")
             } catch (e: retrofit2.HttpException) {
-                Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
+                Log.i("MainViewModel", "HTTP error: ${e.code()} - ${e.message()}")
             } catch (e: Exception) {
-                Log.i("Tests", "Error fetching drivers: ${e.message.orEmpty()}")
+                Log.i("MainViewModel", "Error fetching drivers: ${e.message.orEmpty()}")
             }
         }
     }
@@ -88,11 +88,11 @@ class MainViewModel(
             try {
                 val driver = f1DriverRepository.getDriverById(driverId)
                 _driver.value = driver
-                Log.i("Tests", "(VM) Driver: $driver")
+                Log.i("MainViewModel", "(VM) Driver: $driver")
             } catch (e: retrofit2.HttpException) {
-                Log.i("Tests", "(VM) HTTP error: ${e.code()} - ${e.message()}")
+                Log.i("MainViewModel", "(VM) HTTP error: ${e.code()} - ${e.message()}")
             } catch (e: Exception) {
-                Log.i("Tests", "(VM) Error fetching driver: ${e.message.orEmpty()}")
+                Log.i("MainViewModel", "(VM) Error fetching driver: ${e.message.orEmpty()}")
             }
         }
     }
@@ -102,11 +102,11 @@ class MainViewModel(
             try {
                 val drivers = f1DriverRepository.getDriversBySeason(season)
                 _drivers.value = drivers
-                Log.i("Tests", "Drivers: $drivers")
+                Log.i("MainViewModel", "Drivers: $drivers")
             } catch (e: retrofit2.HttpException) {
-                Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
+                Log.i("MainViewModel", "HTTP error: ${e.code()} - ${e.message()}")
             } catch (e: Exception) {
-                Log.i("Tests", "Error fetching drivers: ${e.message.orEmpty()}")
+                Log.i("MainViewModel", "Error fetching drivers: ${e.message.orEmpty()}")
             }
         }
     }
@@ -122,7 +122,7 @@ class MainViewModel(
                     f1DriverRepository.getDriverBySeasonAndCircuitAndPosition(season, circuit, position)
                 _driver.value = driver
             } catch (e: Exception) {
-                Log.i("Tests", "Error fetching driver: ${e.message.orEmpty()}")
+                Log.i("MainViewModel", "Error fetching driver: ${e.message.orEmpty()}")
             }
         }
     }
@@ -134,11 +134,11 @@ class MainViewModel(
             try {
                 val constructors = f1ConstructorRepository.getConstructors()
                 _constructors.value = constructors
-                Log.i("Tests", "Constructors: $constructors")
+                Log.i("MainViewModel", "Constructors: $constructors")
             } catch (e: retrofit2.HttpException) {
-                Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
+                Log.i("MainViewModel", "HTTP error: ${e.code()} - ${e.message()}")
             } catch (e: Exception) {
-                Log.i("Tests", "Error fetching constructors: ${e.message.orEmpty()}")
+                Log.i("MainViewModel", "Error fetching constructors: ${e.message.orEmpty()}")
             }
         }
 
@@ -149,11 +149,11 @@ class MainViewModel(
             try {
                 val constructor = f1ConstructorRepository.getConstructorById(constructorId)
                 _constructor.value = constructor
-                Log.i("Tests", "Constructor: $constructor")
+                Log.i("MainViewModel", "Constructor: $constructor")
             } catch (e: retrofit2.HttpException) {
-                Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
+                Log.i("MainViewModel", "HTTP error: ${e.code()} - ${e.message()}")
             } catch (e: Exception) {
-                Log.i("Tests", "Error fetching constructor: ${e.message.orEmpty()}")
+                Log.i("MainViewModel", "Error fetching constructor: ${e.message.orEmpty()}")
             }
         }
     }
@@ -163,11 +163,11 @@ class MainViewModel(
             try {
                 val constructors = f1ConstructorRepository.getConstructorsBySeason(season)
                 _constructors.value = constructors
-                Log.i("Tests", "Constructors: $constructors")
+                Log.i("MainViewModel", "Constructors: $constructors")
             } catch (e: retrofit2.HttpException) {
-                Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
+                Log.i("MainViewModel", "HTTP error: ${e.code()} - ${e.message()}")
             } catch (e: Exception) {
-                Log.i("Tests", "Error fetching constructors: ${e.message.orEmpty()}")
+                Log.i("MainViewModel", "Error fetching constructors: ${e.message.orEmpty()}")
             }
         }
     }
@@ -180,9 +180,9 @@ class MainViewModel(
                 val circuits = f1CircuitRepository.getCircuits()
                 _circuits.value = circuits
             } catch (e: retrofit2.HttpException) {
-                Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
+                Log.i("MainViewModel", "HTTP error: ${e.code()} - ${e.message()}")
             } catch (e: Exception) {
-                Log.i("Tests", "Error fetching circuits: ${e.message.orEmpty()}")
+                Log.i("MainViewModel", "Error fetching circuits: ${e.message.orEmpty()}")
             }
         }
     }
@@ -193,9 +193,9 @@ class MainViewModel(
                 val circuits = f1CircuitRepository.getCircuitsBySeason(season)
                 _circuits.value = circuits
             } catch (e: retrofit2.HttpException) {
-                Log.i("Tests", "HTTP error: ${e.code()} - ${e.message()}")
+                Log.i("MainViewModel", "HTTP error: ${e.code()} - ${e.message()}")
             } catch (e: Exception) {
-                Log.i("Tests", "Error fetching circuits: ${e.message.orEmpty()}")
+                Log.i("MainViewModel", "Error fetching circuits: ${e.message.orEmpty()}")
             }
         }
     }

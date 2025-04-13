@@ -8,18 +8,30 @@ import com.vozmediano.f1trivia.data.network.api.F1Service
 import com.vozmediano.f1trivia.domain.F1ConstructorRepository
 import com.vozmediano.f1trivia.domain.model.f1.Constructor
 
-class F1ConstructorRepositoryImpl (
+class F1ConstructorRepositoryImpl(
     private val f1Service: F1Service,
     private val constructorDao: ConstructorDao
-) : F1ConstructorRepository{
+) : F1ConstructorRepository {
 
     override suspend fun getConstructors(): List<Constructor> {
         var constructors = mutableListOf<Constructor>()
-        return try{
-            constructors = constructorDao.getConstructors().map { it.toDomain() }.toMutableList()
-            Log.i("Tests", "constructors found in database")
-            constructors
+        try {
+            constructorDao.getConstructors()
+                .map { it.toDomain() }
+                .also {
+                    constructors = it.toMutableList()
+                    Log.i("F1ConstructorRepositoryImpl", "${constructors.size} drivers found in database")
+                }
+
+            if (constructors.size > 0) {
+                Log.i("F1ConstructorRepositoryImpl", "returning ${constructors.size} drivers")
+                return constructors
+            } else {
+                throw Exception("No constructors found in database")
+            }
         } catch (e: Exception) {
+            Log.i("F1ConstructorRepositoryImpl", "No constructors found in database, fetching from API")
+            Log.i("F1ConstructorRepositoryImpl", "Error: ${e.message}")
             var offset = 0
             val limit = 100
 
@@ -35,18 +47,19 @@ class F1ConstructorRepositoryImpl (
                         break
                     }
                 } catch (e: Exception) {
+                    Log.i("F1ConstructorRepositoryImpl", "Error fetching from API: ${e.message}")
                     break
                 }
             }
-            constructors
         }
-
-
+        return constructors
     }
+
+
     override suspend fun getConstructorById(constructorId: String): Constructor {
         return try {
             val constructor = constructorDao.getConstructor(constructorId).toDomain()
-            Log.i("Tests", "constructor found in database")
+            Log.i("F1ConstructorRepositoryImpl", "constructor found in database")
             constructor
 
         } catch (e: Exception) {
@@ -57,11 +70,12 @@ class F1ConstructorRepositoryImpl (
                 .constructorDtos!!
                 .first()
                 .toDomain()
-            Log.i("Tests", "constructor fetched from api: $constructor")
+            Log.i("F1ConstructorRepositoryImpl", "constructor fetched from api: $constructor")
             constructorDao.upsert(constructor.toDatabase())
             constructor
         }
     }
+
     override suspend fun getConstructorsBySeason(season: String): List<Constructor> {
         return try {
             val constructors =

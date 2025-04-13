@@ -19,5 +19,5 @@ data class ResultDto(
     @Json(name = "laps") val laps: String,
     @Json(name = "status") val status: String,
     @Json(name = "Time") val timeDto: TimeDto? = null,
-    @Json(name = "FastestLap") val fastestLapDto: FastestLapDto? = null
+    @Json(name = "FastestLap") val fastestLapDto: FastestLapDto ? = null
 )
