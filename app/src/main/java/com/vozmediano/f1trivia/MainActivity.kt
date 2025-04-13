@@ -60,8 +60,7 @@ class MainActivity : AppCompatActivity() {
     private fun observeQuestions() {
         lifecycleScope.launch {
             viewModel.question.collectLatest { question ->
-                if (question != null){
-                question.let {
+                question?.let {
                     Log.d("MainActivity", "Question: ${it.title}")
                     binding.questionTv.text = it.title
                     currentOptions = it.options
@@ -71,16 +70,12 @@ class MainActivity : AppCompatActivity() {
 
                     }
                 }
-                } else {
-                    Log.d("MainActivity", "Question is null")
-                    generateQuestion()
-                }
             }
         }
     }
 
     private fun generateQuestion() {
-        when ((3..3).random()) {
+        when ((1..3).random()) {
             1 -> viewModel.fetchQuestionDriverBySeasonAndCircuitAndPosition()
             2 -> viewModel.fetchQuestionDriverByNationality()
             3 -> viewModel.fetchQuestionDriverByWinsAtCircuit()
