@@ -6,5 +6,5 @@ data class FastestLap(
     val rank: String,
     val lap: String,
     @Embedded val time: Time,
-    @Embedded val averageSpeed: AverageSpeed
+    @Embedded val averageSpeed: AverageSpeed ? = null
 )

@@ -7,7 +7,7 @@ data class Result(
     val position : String,
     val positionText : String,
     val points : String,
-    val driver : Driver,
+    @Embedded val driver : Driver,
     @Embedded val constructor : Constructor,
     val grid : String,
     val laps : String,

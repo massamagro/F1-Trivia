@@ -62,7 +62,7 @@ interface F1Service {
     ): MRDataResponse
 
     //RACES
-    @GET("/circuits/{circuitId}/results/{position}")
+    @GET("circuits/{circuitId}/results/{position}/")
     suspend fun getRacesByCircuitAndPosition(
         @Path("circuitId") circuitId: String,
         @Path("position") position: String,

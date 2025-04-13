@@ -7,6 +7,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.vozmediano.f1trivia.data.F1CircuitRepositoryImpl
 import com.vozmediano.f1trivia.data.F1ConstructorRepositoryImpl
 import com.vozmediano.f1trivia.data.F1DriverRepositoryImpl
+import com.vozmediano.f1trivia.data.F1RaceRepositoryImpl
 import com.vozmediano.f1trivia.data.local.F1Database
 import com.vozmediano.f1trivia.data.network.api.F1Service
 import com.vozmediano.f1trivia.domain.F1DriverRepository
@@ -18,6 +19,7 @@ class F1TriviaApplication : Application() {
     lateinit var f1DriverRepository: F1DriverRepository
     lateinit var f1ConstructorRepository: F1ConstructorRepositoryImpl
     lateinit var f1CircuitRepository: F1CircuitRepositoryImpl
+    lateinit var f1RaceRepository: F1RaceRepositoryImpl
 
     private fun getF1Service(): F1Service {
         val client = OkHttpClient.Builder()
@@ -49,6 +51,7 @@ class F1TriviaApplication : Application() {
         f1DriverRepository = F1DriverRepositoryImpl(service, driverDao)
         f1ConstructorRepository = F1ConstructorRepositoryImpl(service, constructorDao)
         f1CircuitRepository = F1CircuitRepositoryImpl(service, circuitDao)
+        f1RaceRepository = F1RaceRepositoryImpl(service)
 
 
     }

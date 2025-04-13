@@ -1,5 +1,6 @@
 package com.vozmediano.f1trivia.data
 
+import android.util.Log
 import com.vozmediano.f1trivia.data.mappers.toDomain
 import com.vozmediano.f1trivia.data.network.api.F1Service
 import com.vozmediano.f1trivia.domain.F1RaceRepository
@@ -18,6 +19,7 @@ class F1RaceRepositoryImpl (
             races
         }
         catch (e: Exception) {
+            Log.i("F1RaceRepositoryImpl", e.toString())
             emptyList()
         }
     }

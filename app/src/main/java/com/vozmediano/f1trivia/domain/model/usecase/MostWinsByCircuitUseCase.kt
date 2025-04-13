@@ -1,0 +1,108 @@
+package com.vozmediano.f1trivia.domain.model.usecase
+
+import android.util.Log
+import com.vozmediano.f1trivia.domain.F1CircuitRepository
+import com.vozmediano.f1trivia.domain.F1RaceRepository
+import com.vozmediano.f1trivia.domain.model.f1.Driver
+import com.vozmediano.f1trivia.domain.model.quiz.Question
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
+class MostWinsByCircuitUseCase(
+    private val f1RaceRepository: F1RaceRepository,
+    private val f1CircuitRepository: F1CircuitRepository
+) {
+    suspend operator fun invoke(): Question? = withContext(Dispatchers.IO) {
+        val circuits = try {
+            Log.i("MostWinsByCircuitUseCase", "Fetching circuits")
+            f1CircuitRepository.getCircuits()
+        } catch (e: Exception) {
+            Log.i("MostWinsByCircuitUseCase", "Error fetching circuits: ${e.message}")
+            return@withContext null
+        }
+
+        var question: Question? = null
+        do {
+            val correctCircuit = circuits.random()
+
+            val raceResults = try {
+                f1RaceRepository.getRacesByCircuitAndPosition(
+                    circuitId = correctCircuit.circuitId,
+                    position = "1"
+                )
+            } catch (e: Exception) {
+                Log.i("MostWinsByCircuitUseCase", "Error fetching results: ${e.message}")
+                return@withContext null
+            }
+            Log.i("MostWinsByCircuitUseCase", "Race results: ${raceResults.toString()}")
+
+            question = Question(
+                title = "Who has the most wins at ${correctCircuit.circuitName}?",
+                options = mutableListOf()
+            )
+
+            val driverSet = mutableSetOf<String>()
+
+            val winsMap = mutableMapOf<Driver, Int>()
+            raceResults.forEach { race ->
+                val driver = race.results.first().driver
+                Log.i(
+                    "MostWinsByCircuitUseCase",
+                    "Driver: ${driver.givenName} ${driver.familyName}"
+                )
+                winsMap[driver] = winsMap.getOrDefault(driver, 0) + 1
+                Log.i("MostWinsByCircuitUseCase", "Wins: ${winsMap[driver]}")
+            }
+            Log.i("MostWinsByCircuitUseCase", "Wins map: $winsMap")
+
+
+            val mostWinsDriver = winsMap.maxBy { it.value }.key
+
+            if (winsMap.maxBy { it.value }.value <= 1 || winsMap.size < 4) continue
+
+
+            driverSet.add(mostWinsDriver.driverId)
+
+            question.options.add(
+                com.vozmediano.f1trivia.domain.model.quiz.Option(
+                    id = 0,
+                    shortText = "${mostWinsDriver.givenName} ${mostWinsDriver.familyName}",
+                    longText = "${mostWinsDriver.givenName} ${mostWinsDriver.familyName} has ${winsMap[mostWinsDriver] ?: 0} wins at ${correctCircuit.circuitName}",
+                    isCorrect = true
+                )
+            )
+
+            //remove drivers with equal wins to the most wins driver
+            val keysToRemove = mutableListOf<Driver>()
+            winsMap.forEach { entry ->
+                if (entry.value == winsMap[mostWinsDriver]) {
+                    keysToRemove.add(entry.key)
+                }
+            }
+            keysToRemove.forEach { key ->
+                winsMap.remove(key)
+            }
+
+            while (driverSet.size < 4) {
+                val driver = winsMap.maxBy { it.value }.key
+                driverSet.add(driver.driverId)
+                question.options.add(
+                    com.vozmediano.f1trivia.domain.model.quiz.Option(
+                        id = question.options.size,
+                        shortText = "${driver.givenName} ${driver.familyName}",
+                        longText = "",
+                        isCorrect = false
+                    )
+                )
+                winsMap.remove(driver)
+            }
+
+            question.options.shuffle()
+            break
+
+
+        } while (true)
+        return@withContext question
+    }
+
+}

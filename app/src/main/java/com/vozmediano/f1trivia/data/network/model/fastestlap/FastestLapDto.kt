@@ -10,5 +10,5 @@ data class FastestLapDto(
     @Json(name = "rank") val rank: String,
     @Json(name = "lap") val lap: String,
     @Json(name = "Time") val time: TimeDto,
-    @Json(name = "AverageSpeed") val averageSpeed: AverageSpeedDto
+    @Json(name = "AverageSpeed") val averageSpeed: AverageSpeedDto ? = null
 )

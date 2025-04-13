@@ -7,5 +7,5 @@ fun FastestLapDto.toDomain() = FastestLap(
     rank = rank,
     lap = lap,
     time = time.toDomain(),
-    averageSpeed = averageSpeed.toDomain(),
+    averageSpeed = averageSpeed?.toDomain(),
 )

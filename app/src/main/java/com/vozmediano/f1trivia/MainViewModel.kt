@@ -15,6 +15,7 @@ import com.vozmediano.f1trivia.domain.model.f1.Driver
 import com.vozmediano.f1trivia.domain.model.quiz.Question
 import com.vozmediano.f1trivia.domain.model.usecase.DriverByNationalityUseCase
 import com.vozmediano.f1trivia.domain.model.usecase.DriverBySeasonAndCircuitAndPositionUseCase
+import com.vozmediano.f1trivia.domain.model.usecase.MostWinsByCircuitUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +27,8 @@ class MainViewModel(
     val f1ConstructorRepository: F1ConstructorRepository,
     val f1CircuitRepository: F1CircuitRepository,
     private val driverBySeasonAndCircuitAndPositionUseCase: DriverBySeasonAndCircuitAndPositionUseCase,
-    private val driverByNationalityUseCase: DriverByNationalityUseCase
+    private val driverByNationalityUseCase: DriverByNationalityUseCase,
+    private val mostWinsByCircuitUseCase: MostWinsByCircuitUseCase
     ) : ViewModel() {
 
     //QUESTION
@@ -64,6 +66,12 @@ class MainViewModel(
     fun fetchQuestionDriverByNationality(){
         viewModelScope.launch {
             _question.value = driverByNationalityUseCase()
+        }
+    }
+
+    fun fetchQuestionDriverByWinsAtCircuit() {
+        viewModelScope.launch {
+            _question.value = mostWinsByCircuitUseCase()
         }
     }
 
@@ -200,6 +208,8 @@ class MainViewModel(
         }
     }
 
+
+
     companion object {
         val Factory = viewModelFactory {
             initializer {
@@ -209,7 +219,8 @@ class MainViewModel(
                     application.f1ConstructorRepository,
                     application.f1CircuitRepository,
                     DriverBySeasonAndCircuitAndPositionUseCase(application.f1DriverRepository, application.f1CircuitRepository),
-                    DriverByNationalityUseCase(application.f1DriverRepository)
+                    DriverByNationalityUseCase(application.f1DriverRepository),
+                    MostWinsByCircuitUseCase(application.f1RaceRepository, application.f1CircuitRepository)
                 )
             }
         }
