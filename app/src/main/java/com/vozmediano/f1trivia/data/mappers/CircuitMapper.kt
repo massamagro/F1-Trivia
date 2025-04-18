@@ -13,14 +13,14 @@ fun CircuitDto.toDomain() = Circuit(
 
 fun Circuit.toDatabase() = CircuitEntity(
     circuitId = circuitId,
-    url = url,
+    circuitUrl = url,
     circuitName = circuitName,
     location = location.toDatabase()
 )
 
 fun CircuitEntity.toDomain() = Circuit(
     circuitId = circuitId,
-    url = url,
+    url = circuitUrl,
     circuitName = circuitName,
     location = location.toDomain()
 )

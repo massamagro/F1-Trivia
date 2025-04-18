@@ -20,20 +20,20 @@ fun Driver.toDatabase() = DriverEntity(
     driverId = driverId,
     permanentNumber = permanentNumber,
     code = code,
-    url = url,
+    driverUrl = url,
     givenName = givenName,
     familyName = familyName,
     dateOfBirth = dateOfBirth,
-    nationality = nationality
+    driverNationality = nationality
 )
 
 fun DriverEntity.toDomain() = Driver(
     driverId = driverId,
     permanentNumber = permanentNumber,
     code = code,
-    url = url,
+    url = driverUrl,
     givenName = givenName,
     familyName = familyName,
     dateOfBirth = dateOfBirth,
-    nationality = nationality
+    nationality = driverNationality
 )

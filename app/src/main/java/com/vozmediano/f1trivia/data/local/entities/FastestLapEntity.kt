@@ -6,6 +6,6 @@ import androidx.room.Embedded
 data class FastestLapEntity(
     val rank: String,
     val lap: String,
-    @Embedded val time: TimeEntity,
-    @Embedded val averageSpeed: AverageSpeedEntity
+    @Embedded val fastestLapTime: TimeEntity,
+    @Embedded val averageSpeed: AverageSpeedEntity ? = null
 )

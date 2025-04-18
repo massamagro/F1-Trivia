@@ -45,7 +45,7 @@ class MostWinsByCircuitUseCase(
 
             val winsMap = mutableMapOf<Driver, Int>()
             raceResults.forEach { race ->
-                val driver = race.results.first().driver
+                val driver = race.results!!.first().driver
                 Log.i(
                     "MostWinsByCircuitUseCase",
                     "Driver: ${driver.givenName} ${driver.familyName}"

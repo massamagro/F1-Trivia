@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "constructors")
 data class ConstructorEntity(
     @PrimaryKey val constructorId: String,
-    val url: String,
+    val constructorUrl: String,
     val name: String,
-    val nationality: String
+    val constructorNationality: String
 )

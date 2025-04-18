@@ -8,9 +8,9 @@ data class DriverEntity(
     @PrimaryKey val driverId: String,
     val permanentNumber: String,
     val code: String,
-    val url: String,
+    val driverUrl: String,
     val givenName: String,
     val familyName: String,
     val dateOfBirth: String,
-    val nationality: String
+    val driverNationality: String
 )

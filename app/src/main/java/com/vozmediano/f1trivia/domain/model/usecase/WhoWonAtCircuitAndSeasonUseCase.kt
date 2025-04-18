@@ -1,60 +1,43 @@
 package com.vozmediano.f1trivia.domain.model.usecase
 
 import android.util.Log
-import com.vozmediano.f1trivia.domain.F1CircuitRepository
-import com.vozmediano.f1trivia.domain.F1DriverRepository
+import com.vozmediano.f1trivia.domain.F1ResultRepository
+import com.vozmediano.f1trivia.domain.model.f1.Driver
 import com.vozmediano.f1trivia.domain.model.quiz.Option
 import com.vozmediano.f1trivia.domain.model.quiz.Question
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class WhoWonAtCircuitAndSeasonUseCase(
-    private val f1DriverRepository: F1DriverRepository,
-    private val f1CircuitRepository: F1CircuitRepository
+    private val f1ResultRepository: F1ResultRepository
 ) {
     suspend operator fun invoke(): Question? = withContext(Dispatchers.IO) {
-        val correctSeason = (1960..2024).random().toString()
+        val correctSeason = (1950..2025).random().toString()
 
-        val circuits = try {
+        val results = try {
             Log.i("WhoWonAtCircuitAndSeasonUseCase", "Fetching circuits")
-            f1CircuitRepository.getCircuitsBySeason(correctSeason)
+            f1ResultRepository.getResultsBySeason(correctSeason)
         } catch (e: Exception) {
             Log.i("WhoWonAtCircuitAndSeasonUseCase", "Error fetching circuits: ${e.message}")
             return@withContext null
         }
 
-        if (circuits.isEmpty()) {
-            Log.i("WhoWonAtCircuitAndSeasonUseCase", "No circuits found for season $correctSeason")
-            return@withContext null
-        }
-
-        val correctCircuit = circuits.random()
-        val correctPosition = "1"
-
-        val correctDriver = try {
-            Log.i("WhoWonAtCircuitAndSeasonUseCase", "Fetching driver")
-            f1DriverRepository.getDriverBySeasonAndCircuitAndPosition(
-                correctSeason,
-                correctCircuit.circuitId,
-                correctPosition
-            )
-        } catch (e: Exception) {
-            Log.i("WhoWonAtCircuitAndSeasonUseCase", "Error fetching driver: ${e.message}")
-            return@withContext null
-        }
+        val correctRound = results.random().round
+        val correctResults = results.filter { it.round == correctRound }
+        val correctDriver = correctResults.first { it.position == "1" }.driver
+        val correctRaceName = correctResults.first().raceName
 
         val question = Question(
-            title = "Who won at ${correctCircuit.circuitName} in $correctSeason?",
+            title = "Who won the ${correctRaceName} in $correctSeason?",
             options = mutableListOf()
         )
-
         val driverSet = mutableSetOf<String>()
 
         question.options.add(
             Option(
                 id = 0,
                 shortText = "${correctDriver.givenName} ${correctDriver.familyName}",
-                longText = "${correctDriver.givenName} ${correctDriver.familyName} won at ${correctCircuit.circuitName} in $correctSeason",
+                longText = "${correctDriver.givenName} ${correctDriver.familyName} won the ${correctRaceName} in $correctSeason",
                 isCorrect = true
             )
         )
@@ -62,64 +45,55 @@ class WhoWonAtCircuitAndSeasonUseCase(
         driverSet.add(correctDriver.driverId)
 
         while (driverSet.size < 4) {
-            var season = ""
-            var circuitId = ""
-            var position = ""
-            when ((1..5).random()) {
-                //Same circuit, different season
+            lateinit var distractDriver: Driver
+            when((1..5).random()){
+                //same circuit, different season
                 1 -> {
                     Log.i("WhoWonAtCircuitAndSeasonUseCase", "Same circuit, different season")
-                    season = correctSeason + (-2..2).random()
-                    circuitId = correctCircuit.circuitId
-                    position = "1"
+                    val diffSeason = (-2..2).random().toString()
+                    try{
+                        val differentSeasonResults = f1ResultRepository.getResultsBySeason(diffSeason)
+                        distractDriver = differentSeasonResults.first().driver
+                    } catch (e: Exception){
+                        Log.i("WhoWonAtCircuitAndSeasonUseCase", "error on: same circuit different season($diffSeason)")
+                    }
                 }
-                //Different circuit, same season
+                //Different round, same season
                 2 -> {
-                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "Different circuit, same season")
-                    season = correctSeason
-                    circuitId = circuits.filter { it.circuitId != correctCircuit.circuitId }
-                        .random().circuitId
-                    position = "1"
+                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "Same circuit, different season")
+                    val diffResult = results.filter { it.round != correctRound }.filter{it.position == "1"}.random()
+                    distractDriver = diffResult.driver
                 }
-                //Same circuit, same season, 2nd position
+                //Same round, same season, 2nd position
                 3 -> {
-                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "Same circuit, same season, 2nd position")
-                    season = correctSeason
-                    circuitId = correctCircuit.circuitId
-                    position = "2"
+                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "Same round, same season, 2nd position")
+                    distractDriver = correctResults.first { it.position == "2" }.driver
                 }
-                //Same circuit, same season, 3rd position
+                //Same round, same season, 3rd position
                 4 -> {
-                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "Same circuit, same season, 3rd position")
-                    season = correctSeason
-                    circuitId = correctCircuit.circuitId
-                    position = "3"
+                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "Same round, same season, 3rd position")
+                    distractDriver = correctResults.first { it.position == "3" }.driver
                 }
-                //Different race, same year, podium position
+                //Different round, same year, podium position
                 5 -> {
                     Log.i("WhoWonAtCircuitAndSeasonUseCase", "Different race, same year, podium position")
-                    season = correctSeason
-                    circuitId = circuits.filter { it.circuitId != correctCircuit.circuitId }
-                        .random().circuitId
-                    position = (2..3).random().toString()
+                    val diffResult = results.filter { it.round != correctRound }.filter{it.position == (2..3).random().toString()}.random()
+                    distractDriver = diffResult.driver
                 }
             }
+            try{
+                if(driverSet.contains(distractDriver.driverId)) continue
+                driverSet.add(distractDriver.driverId)
 
-            try {
-                val distractor =
-                    f1DriverRepository.getDriverBySeasonAndCircuitAndPosition(season, circuitId, position)
-                if (driverSet.contains(distractor.driverId)) continue
-
-                driverSet.add(distractor.driverId)
                 question.options.add(
                     Option(
                         id = driverSet.size,
-                        shortText = "${distractor.givenName} ${distractor.familyName}",
+                        shortText = "${distractDriver.givenName} ${distractDriver.familyName}",
                         longText = "",
                         isCorrect = false
                     )
                 )
-            } catch (e: Exception) {
+            } catch (e: Exception){
                 continue
             }
         }
@@ -127,5 +101,9 @@ class WhoWonAtCircuitAndSeasonUseCase(
         question.options.shuffle()
 
         return@withContext question
+
+
     }
+
+
 }

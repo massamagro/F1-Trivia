@@ -13,4 +13,9 @@ data class Result(
     val laps : String,
     val status : String,
     @Embedded val fastestLap: FastestLap ? = null,
+
+    val season: String?,
+    val round: String?,
+    @Embedded val circuit: Circuit,
+    val raceName: String
 )

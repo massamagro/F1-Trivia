@@ -13,10 +13,10 @@ data class RaceDto(
     @Json(name = "round") val round: String,
     @Json(name = "url") val url: String,
     @Json(name = "raceName") val raceName: String,
-    @Json(name = "circuit") val circuit: CircuitDto ?= null,
-    @Json(name = "location") val location: Location ? = null,
+    @Json(name = "circuit") val circuitDto: CircuitDto,
+    @Json(name = "location") val locationDto: Location ? = null,
     @Json(name = "date") val date: String,
-    @Json(name = "Results") val results: List<ResultDto>,
+    @Json(name = "Results") val resultsDto: List<ResultDto> ? = emptyList(),
 
 
     )

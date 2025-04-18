@@ -8,9 +8,11 @@ import com.vozmediano.f1trivia.data.F1CircuitRepositoryImpl
 import com.vozmediano.f1trivia.data.F1ConstructorRepositoryImpl
 import com.vozmediano.f1trivia.data.F1DriverRepositoryImpl
 import com.vozmediano.f1trivia.data.F1RaceRepositoryImpl
+import com.vozmediano.f1trivia.data.F1ResultRepositoryImpl
 import com.vozmediano.f1trivia.data.local.F1Database
 import com.vozmediano.f1trivia.data.network.api.F1Service
 import com.vozmediano.f1trivia.domain.F1DriverRepository
+import com.vozmediano.f1trivia.domain.F1ResultRepository
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -20,6 +22,7 @@ class F1TriviaApplication : Application() {
     lateinit var f1ConstructorRepository: F1ConstructorRepositoryImpl
     lateinit var f1CircuitRepository: F1CircuitRepositoryImpl
     lateinit var f1RaceRepository: F1RaceRepositoryImpl
+    lateinit var f1ResultRepository: F1ResultRepositoryImpl
 
     private fun getF1Service(): F1Service {
         val client = OkHttpClient.Builder()
@@ -47,10 +50,12 @@ class F1TriviaApplication : Application() {
         val driverDao = database.driverDao()
         val constructorDao = database.constructorDao()
         val circuitDao = database.circuitDao()
+        val resultDao = database.resultDao()
 
         f1DriverRepository = F1DriverRepositoryImpl(service, driverDao)
         f1ConstructorRepository = F1ConstructorRepositoryImpl(service, constructorDao)
         f1CircuitRepository = F1CircuitRepositoryImpl(service, circuitDao)
+        f1ResultRepository = F1ResultRepositoryImpl(service, resultDao)
         f1RaceRepository = F1RaceRepositoryImpl(service)
 
 

@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "circuits")
 class CircuitEntity (
     @PrimaryKey val circuitId: String,
-    val url: String,
+    val circuitUrl: String,
     val circuitName: String,
     @Embedded val location: LocationEntity
     )

@@ -218,7 +218,7 @@ class MainViewModel(
                     application.f1DriverRepository,
                     application.f1ConstructorRepository,
                     application.f1CircuitRepository,
-                    WhoWonAtCircuitAndSeasonUseCase(application.f1DriverRepository, application.f1CircuitRepository),
+                    WhoWonAtCircuitAndSeasonUseCase(application.f1ResultRepository),
                     DriverByNationalityUseCase(application.f1DriverRepository),
                     MostWinsByCircuitUseCase(application.f1RaceRepository, application.f1CircuitRepository)
                 )

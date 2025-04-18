@@ -13,14 +13,14 @@ fun ConstructorDto.toDomain() = Constructor(
 
 fun Constructor.toDatabase() = ConstructorEntity(
     constructorId = constructorId,
-    url = url,
+    constructorUrl = url,
     name = name,
-    nationality = nationality
+    constructorNationality = nationality
 )
 
 fun ConstructorEntity.toDomain() = Constructor(
     constructorId = constructorId,
-    url = url,
+    url = constructorUrl,
     name = name,
-    nationality = nationality
+    nationality = constructorNationality
 )
