@@ -1,5 +1,6 @@
 package com.vozmediano.f1trivia
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
@@ -7,6 +8,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.vozmediano.f1trivia.domain.model.quiz.Question
 import com.vozmediano.f1trivia.domain.model.usecase.DriverByNationalityUseCase
+import com.vozmediano.f1trivia.domain.model.usecase.MostPodiumsByCircuitUseCase
 import com.vozmediano.f1trivia.domain.model.usecase.MostWinsByCircuitUseCase
 import com.vozmediano.f1trivia.domain.model.usecase.WhoWonAtCircuitAndSeasonUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +19,8 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val whoWonAtCircuitAndSeasonUseCase: WhoWonAtCircuitAndSeasonUseCase,
     private val driverByNationalityUseCase: DriverByNationalityUseCase,
-    private val mostWinsByCircuitUseCase: MostWinsByCircuitUseCase
+    private val mostWinsByCircuitUseCase: MostWinsByCircuitUseCase,
+    private val mostPodiumsByCircuitUseCase: MostPodiumsByCircuitUseCase
     ) : ViewModel() {
 
     //QUESTION
@@ -48,20 +51,30 @@ class MainViewModel(
 */
     //QUESTION
     fun fetchQuestionDriverBySeasonAndCircuitAndPosition() {
+        Log.i("MainViewModel", "Question: whoWonAtCircuitAndSeason")
         viewModelScope.launch{
             _question.value = whoWonAtCircuitAndSeasonUseCase()
         }
     }
 
     fun fetchQuestionDriverByNationality(){
+        Log.i("MainViewModel", "Question: driverByNationality")
         viewModelScope.launch {
             _question.value = driverByNationalityUseCase()
         }
     }
 
     fun fetchQuestionDriverByWinsAtCircuit() {
+        Log.i("MainViewModel", "Question: mostWinsByCircuit")
         viewModelScope.launch {
             _question.value = mostWinsByCircuitUseCase()
+        }
+    }
+
+    fun fetchQuestionDriverByPodiumsAtCircuit() {
+        Log.i("MainViewModel", "Question: mostPodiumsByCircuit")
+        viewModelScope.launch {
+            _question.value = mostPodiumsByCircuitUseCase()
         }
     }
     /*
@@ -207,7 +220,8 @@ class MainViewModel(
                 MainViewModel(
                     WhoWonAtCircuitAndSeasonUseCase(application.f1ResultRepository),
                     DriverByNationalityUseCase(application.f1DriverRepository),
-                    MostWinsByCircuitUseCase(application.f1RaceRepository, application.f1CircuitRepository)
+                    MostWinsByCircuitUseCase(application.f1RaceRepository, application.f1CircuitRepository),
+                    MostPodiumsByCircuitUseCase(application.f1RaceRepository, application.f1CircuitRepository)
                 )
             }
         }

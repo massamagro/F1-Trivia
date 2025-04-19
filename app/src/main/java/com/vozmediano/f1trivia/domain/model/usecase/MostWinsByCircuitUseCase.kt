@@ -22,9 +22,11 @@ class MostWinsByCircuitUseCase(
         }
 
         var question: Question?
+        var attempts = 0
         do {
+            attempts++
             val correctCircuit = circuits.random()
-
+            Log.i("MostWinsByCircuitUseCase", "attempt $attempts - ${correctCircuit.circuitId}")
             val raceResults = try {
                 f1RaceRepository.getRacesByCircuitAndPosition(
                     circuitId = correctCircuit.circuitId,
@@ -93,9 +95,12 @@ class MostWinsByCircuitUseCase(
             question.options.shuffle()
             break
 
-
-        } while (true)
-        return@withContext question
+        } while (attempts <= 5)
+        if (attempts > 5){
+            return@withContext null
+        } else {
+            return@withContext question
+        }
     }
 
 }
