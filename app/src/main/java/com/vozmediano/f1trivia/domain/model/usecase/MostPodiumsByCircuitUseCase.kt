@@ -3,15 +3,19 @@ package com.vozmediano.f1trivia.domain.model.usecase
 import android.util.Log
 import com.vozmediano.f1trivia.domain.F1CircuitRepository
 import com.vozmediano.f1trivia.domain.F1RaceRepository
+import com.vozmediano.f1trivia.domain.WikiRepository
 import com.vozmediano.f1trivia.domain.model.f1.Driver
 import com.vozmediano.f1trivia.domain.model.f1.Race
 import com.vozmediano.f1trivia.domain.model.quiz.Question
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 class MostPodiumsByCircuitUseCase(
     private val f1RaceRepository: F1RaceRepository,
-    private val f1CircuitRepository: F1CircuitRepository
+    private val f1CircuitRepository: F1CircuitRepository,
+    private val wikiRepository: WikiRepository
 ) {
     suspend operator fun invoke(): Question? = withContext(Dispatchers.IO){
         val circuits = try {
@@ -27,6 +31,7 @@ class MostPodiumsByCircuitUseCase(
         do{
             attempts++
             val correctCircuit = circuits.random()
+
             Log.i("MostPodiumsByCircuitUseCase", "attempt $attempts - ${correctCircuit.circuitId}")
             val raceResults: MutableList<Race> = emptyList<Race>().toMutableList()
             val raceResults1 = try{
@@ -61,9 +66,22 @@ class MostPodiumsByCircuitUseCase(
             raceResults.addAll(raceResults2)
             raceResults.addAll(raceResults3)
 
+            Log.i("MostPodiumsByCircuitUseCase", "circuit.url: ${correctCircuit.url}")
+
+            var title = URLDecoder
+                .decode(correctCircuit.url, StandardCharsets.UTF_8.name())
+                .substringAfterLast("/")
+
+            Log.i("MostPodiumsByCircuitUseCase", "title: $title")
+
+            var imageUrl = wikiRepository.getImage(title)
+
+            Log.i("MostPodiumsByCircuitUseCase", "wiki url: $imageUrl")
+
             question = Question(
                 title = "Who has the most podiums at ${correctCircuit.circuitName}?",
-                options = mutableListOf()
+                options = mutableListOf(),
+                image = imageUrl
             )
 
             val driverSet = mutableSetOf<String>()
@@ -115,7 +133,11 @@ class MostPodiumsByCircuitUseCase(
                 podiumsMap.remove(driver)
             }
 
+            Log.i("MostWinsByCircuitUseCase","Question generated")
+            Log.i("MostWinsByCircuitUseCase",question.toString())
+
             question.options.shuffle()
+
             break
 
         } while (attempts <= 5)

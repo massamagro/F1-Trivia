@@ -221,7 +221,7 @@ class MainViewModel(
                     WhoWonAtCircuitAndSeasonUseCase(application.f1ResultRepository),
                     DriverByNationalityUseCase(application.f1DriverRepository),
                     MostWinsByCircuitUseCase(application.f1RaceRepository, application.f1CircuitRepository),
-                    MostPodiumsByCircuitUseCase(application.f1RaceRepository, application.f1CircuitRepository)
+                    MostPodiumsByCircuitUseCase(application.f1RaceRepository, application.f1CircuitRepository, application.wikiRepository)
                 )
             }
         }
