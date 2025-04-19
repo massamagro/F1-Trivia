@@ -21,7 +21,7 @@ class MostWinsByCircuitUseCase(
             return@withContext null
         }
 
-        var question: Question? = null
+        var question: Question?
         do {
             val correctCircuit = circuits.random()
 
@@ -34,7 +34,7 @@ class MostWinsByCircuitUseCase(
                 Log.i("MostWinsByCircuitUseCase", "Error fetching results: ${e.message}")
                 return@withContext null
             }
-            Log.i("MostWinsByCircuitUseCase", "Race results: ${raceResults.toString()}")
+            Log.i("MostWinsByCircuitUseCase", "Race results: $raceResults")
 
             question = Question(
                 title = "Who has the most wins at ${correctCircuit.circuitName}?",
@@ -46,20 +46,13 @@ class MostWinsByCircuitUseCase(
             val winsMap = mutableMapOf<Driver, Int>()
             raceResults.forEach { race ->
                 val driver = race.results!!.first().driver
-                Log.i(
-                    "MostWinsByCircuitUseCase",
-                    "Driver: ${driver.givenName} ${driver.familyName}"
-                )
                 winsMap[driver] = winsMap.getOrDefault(driver, 0) + 1
-                Log.i("MostWinsByCircuitUseCase", "Wins: ${winsMap[driver]}")
+                Log.i("MostWinsByCircuitUseCase", "${driver.givenName} ${driver.familyName} ${winsMap[driver]}")
             }
-            Log.i("MostWinsByCircuitUseCase", "Wins map: $winsMap")
-
 
             val mostWinsDriver = winsMap.maxBy { it.value }.key
 
             if (winsMap.maxBy { it.value }.value <= 1 || winsMap.size < 4) continue
-
 
             driverSet.add(mostWinsDriver.driverId)
 

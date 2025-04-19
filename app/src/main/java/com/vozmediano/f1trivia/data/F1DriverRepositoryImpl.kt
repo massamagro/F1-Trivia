@@ -94,7 +94,7 @@ class F1DriverRepositoryImpl(
             emptyList()
         }
     }
-
+/*
     override suspend fun getDriverBySeasonAndCircuitAndPosition(
         season: String,
         circuit: String,
@@ -111,5 +111,5 @@ class F1DriverRepositoryImpl(
             ?.toDomain()
         return driver
             ?: throw Exception("Driver not found")
-    }
+    }*/
 }

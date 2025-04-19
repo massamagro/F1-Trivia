@@ -9,7 +9,7 @@ import com.vozmediano.f1trivia.domain.model.f1.Race
 class F1RaceRepositoryImpl(
     private val f1service: F1Service
 ) : F1RaceRepository {
-    /*
+
     override suspend fun getRacesByCircuitAndPosition(
         circuitId: String,
         position: String
@@ -26,7 +26,7 @@ class F1RaceRepositoryImpl(
             emptyList()
         }
     }
-
+/*
     override suspend fun getRaceBySeasonAndCircuit(season: String, circuitId: String): Race {
         return try {
             val response = f1service.getRaceBySeasonAndCircuit(season, circuitId)

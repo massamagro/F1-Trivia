@@ -1,31 +1,20 @@
 package com.vozmediano.f1trivia
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.vozmediano.f1trivia.domain.F1CircuitRepository
-import com.vozmediano.f1trivia.domain.F1ConstructorRepository
-import com.vozmediano.f1trivia.domain.F1DriverRepository
-import com.vozmediano.f1trivia.domain.model.f1.Circuit
-import com.vozmediano.f1trivia.domain.model.f1.Constructor
-import com.vozmediano.f1trivia.domain.model.f1.Driver
 import com.vozmediano.f1trivia.domain.model.quiz.Question
 import com.vozmediano.f1trivia.domain.model.usecase.DriverByNationalityUseCase
-import com.vozmediano.f1trivia.domain.model.usecase.WhoWonAtCircuitAndSeasonUseCase
 import com.vozmediano.f1trivia.domain.model.usecase.MostWinsByCircuitUseCase
-import kotlinx.coroutines.Dispatchers
+import com.vozmediano.f1trivia.domain.model.usecase.WhoWonAtCircuitAndSeasonUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    val f1DriverRepository: F1DriverRepository,
-    val f1ConstructorRepository: F1ConstructorRepository,
-    val f1CircuitRepository: F1CircuitRepository,
     private val whoWonAtCircuitAndSeasonUseCase: WhoWonAtCircuitAndSeasonUseCase,
     private val driverByNationalityUseCase: DriverByNationalityUseCase,
     private val mostWinsByCircuitUseCase: MostWinsByCircuitUseCase
@@ -35,6 +24,7 @@ class MainViewModel(
     private val _question = MutableStateFlow<Question?>(null)
     val question: StateFlow<Question?> = _question.asStateFlow()
 
+    /*
     //DRIVERS
     private val _driver = MutableStateFlow<Driver?>(null)
     val driver: StateFlow<Driver?> = _driver.asStateFlow()
@@ -55,7 +45,7 @@ class MainViewModel(
 
     private val _circuits = MutableStateFlow<List<Circuit>?>(null)
     val circuits: StateFlow<List<Circuit>?> = _circuits.asStateFlow()
-
+*/
     //QUESTION
     fun fetchQuestionDriverBySeasonAndCircuitAndPosition() {
         viewModelScope.launch{
@@ -74,7 +64,7 @@ class MainViewModel(
             _question.value = mostWinsByCircuitUseCase()
         }
     }
-
+    /*
 
     //DRIVERS
     fun fetchDrivers() {
@@ -207,7 +197,7 @@ class MainViewModel(
             }
         }
     }
-
+*/
 
 
     companion object {
@@ -215,9 +205,6 @@ class MainViewModel(
             initializer {
                 val application = this[APPLICATION_KEY] as F1TriviaApplication
                 MainViewModel(
-                    application.f1DriverRepository,
-                    application.f1ConstructorRepository,
-                    application.f1CircuitRepository,
                     WhoWonAtCircuitAndSeasonUseCase(application.f1ResultRepository),
                     DriverByNationalityUseCase(application.f1DriverRepository),
                     MostWinsByCircuitUseCase(application.f1RaceRepository, application.f1CircuitRepository)

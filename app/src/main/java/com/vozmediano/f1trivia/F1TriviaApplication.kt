@@ -12,7 +12,6 @@ import com.vozmediano.f1trivia.data.F1ResultRepositoryImpl
 import com.vozmediano.f1trivia.data.local.F1Database
 import com.vozmediano.f1trivia.data.network.api.F1Service
 import com.vozmediano.f1trivia.domain.F1DriverRepository
-import com.vozmediano.f1trivia.domain.F1ResultRepository
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory

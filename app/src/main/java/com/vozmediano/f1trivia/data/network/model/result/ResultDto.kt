@@ -2,7 +2,6 @@ package com.vozmediano.f1trivia.data.network.model.result
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.vozmediano.f1trivia.data.network.model.circuit.CircuitDto
 import com.vozmediano.f1trivia.data.network.model.constructor.ConstructorDto
 import com.vozmediano.f1trivia.data.network.model.driver.DriverDto
 import com.vozmediano.f1trivia.data.network.model.fastestlap.FastestLapDto

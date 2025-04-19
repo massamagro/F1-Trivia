@@ -21,17 +21,17 @@ class F1ResultRepositoryImpl(
                     results = it.toMutableList()
                     Log.i(
                         "F1ResultRepositoryImpl",
-                        "${results.size} results found for ${season} season in database"
+                        "${results.size} results found for $season season in database"
                     )
                 }
             if (results.size > 0) {
                 Log.i(
                     "F1ResultRepositoryImpl",
-                    "returning ${results.size} results for ${season} season"
+                    "returning ${results.size} results for $season season"
                 )
                 return results
             } else {
-                throw Exception("No results found for ${season} season in database")
+                throw Exception("No results found for $season season in database")
             }
         } catch (e: Exception) {
             Log.i(
@@ -40,14 +40,14 @@ class F1ResultRepositoryImpl(
             )
             Log.i("F1ResultRepositoryImpl", "Error: ${e.message}")
             var offset = 0
-            var limit = 100
+            val limit = 100
 
             while (true) {
                 try {
                     val response = f1Service.getResultsBySeason(
+                        season = season,
                         limit = limit,
                         offset = offset,
-                        season = season
                     )
                     val racesDtos = response
                         .mrData
@@ -58,7 +58,7 @@ class F1ResultRepositoryImpl(
                         val circuit = raceDto.circuitDto
                         val raceName = raceDto.raceName
 
-                        var resultsDto = raceDto.resultsDto!!
+                        val resultsDto = raceDto.resultsDto!!
                         results.addAll(resultsDto.map { it.toDomain(season,round,circuit,raceName) })
                         resultDao.upsertAll(resultsDto.map { it.toDomain(season,round,circuit,raceName).toDatabase() })
                     }

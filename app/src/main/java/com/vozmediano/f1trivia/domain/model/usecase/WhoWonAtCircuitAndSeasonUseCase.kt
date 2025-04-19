@@ -12,7 +12,7 @@ class WhoWonAtCircuitAndSeasonUseCase(
     private val f1ResultRepository: F1ResultRepository
 ) {
     suspend operator fun invoke(): Question? = withContext(Dispatchers.IO) {
-        val correctSeason = (1950..2025).random().toString()
+        val correctSeason = (2022..2025).random().toString()
 
         val results = try {
             Log.i("WhoWonAtCircuitAndSeasonUseCase", "Fetching circuits")
@@ -26,9 +26,10 @@ class WhoWonAtCircuitAndSeasonUseCase(
         val correctResults = results.filter { it.round == correctRound }
         val correctDriver = correctResults.first { it.position == "1" }.driver
         val correctRaceName = correctResults.first().raceName
+        Log.i("WhoWonAtCircuitAndSeasonUseCase", "$correctSeason - ($correctRound) - $correctRaceName")
 
         val question = Question(
-            title = "Who won the ${correctRaceName} in $correctSeason?",
+            title = "Who won the $correctRaceName in $correctSeason?",
             options = mutableListOf()
         )
         val driverSet = mutableSetOf<String>()
@@ -37,7 +38,7 @@ class WhoWonAtCircuitAndSeasonUseCase(
             Option(
                 id = 0,
                 shortText = "${correctDriver.givenName} ${correctDriver.familyName}",
-                longText = "${correctDriver.givenName} ${correctDriver.familyName} won the ${correctRaceName} in $correctSeason",
+                longText = "${correctDriver.givenName} ${correctDriver.familyName} won the $correctRaceName in $correctSeason",
                 isCorrect = true
             )
         )
@@ -50,10 +51,12 @@ class WhoWonAtCircuitAndSeasonUseCase(
                 //same circuit, different season
                 1 -> {
                     Log.i("WhoWonAtCircuitAndSeasonUseCase", "Same circuit, different season")
-                    val diffSeason = (-2..2).random().toString()
+                    val diffSeason = (correctSeason.toInt()+(-2..2).random()).toString()
+                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "fetching for $diffSeason season")
                     try{
                         val differentSeasonResults = f1ResultRepository.getResultsBySeason(diffSeason)
                         distractDriver = differentSeasonResults.first().driver
+                        Log.i("WhoWonAtCircuitAndSeasonUseCase", "Distract driver found: ${distractDriver.givenName}")
                     } catch (e: Exception){
                         Log.i("WhoWonAtCircuitAndSeasonUseCase", "error on: same circuit different season($diffSeason)")
                     }
@@ -63,22 +66,26 @@ class WhoWonAtCircuitAndSeasonUseCase(
                     Log.i("WhoWonAtCircuitAndSeasonUseCase", "Same circuit, different season")
                     val diffResult = results.filter { it.round != correctRound }.filter{it.position == "1"}.random()
                     distractDriver = diffResult.driver
+                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "Distract driver found: ${distractDriver.givenName}")
                 }
                 //Same round, same season, 2nd position
                 3 -> {
                     Log.i("WhoWonAtCircuitAndSeasonUseCase", "Same round, same season, 2nd position")
                     distractDriver = correctResults.first { it.position == "2" }.driver
+                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "Distract driver found: ${distractDriver.givenName}")
                 }
                 //Same round, same season, 3rd position
                 4 -> {
                     Log.i("WhoWonAtCircuitAndSeasonUseCase", "Same round, same season, 3rd position")
                     distractDriver = correctResults.first { it.position == "3" }.driver
+                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "Distract driver found: ${distractDriver.givenName}")
                 }
                 //Different round, same year, podium position
                 5 -> {
                     Log.i("WhoWonAtCircuitAndSeasonUseCase", "Different race, same year, podium position")
                     val diffResult = results.filter { it.round != correctRound }.filter{it.position == (2..3).random().toString()}.random()
                     distractDriver = diffResult.driver
+                    Log.i("WhoWonAtCircuitAndSeasonUseCase", "Distract driver found: ${distractDriver.givenName}")
                 }
             }
             try{
@@ -94,6 +101,7 @@ class WhoWonAtCircuitAndSeasonUseCase(
                     )
                 )
             } catch (e: Exception){
+                Log.i("WhoWonAtCircuitAndSeasonUseCase", "Error: ${e.message}")
                 continue
             }
         }

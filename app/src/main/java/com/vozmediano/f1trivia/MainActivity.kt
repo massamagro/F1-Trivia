@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
 
         setupClickListeners()
         observeQuestions()
-
         generateQuestion()
 
     }
@@ -75,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun generateQuestion() {
-        when ((1..3).random()) {
+        when ((3..3).random()) {
             1 -> viewModel.fetchQuestionDriverBySeasonAndCircuitAndPosition()
             2 -> viewModel.fetchQuestionDriverByNationality()
             3 -> viewModel.fetchQuestionDriverByWinsAtCircuit()
