@@ -21,6 +21,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/question_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/question_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/option_one_tv"/>
+
     <TextView
         android:id="@+id/option_one_tv"
         android:layout_width="wrap_content"
@@ -30,7 +39,7 @@
         app:layout_constraintBottom_toTopOf="@id/option_three_tv"
         app:layout_constraintEnd_toStartOf="@id/option_two_tv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/question_tv" />
+        app:layout_constraintTop_toBottomOf="@id/question_iv" />
 
     <TextView
         android:id="@+id/option_two_tv"
@@ -41,7 +50,7 @@
         app:layout_constraintBottom_toTopOf="@id/option_four_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/option_one_tv"
-        app:layout_constraintTop_toBottomOf="@id/question_tv" />
+        app:layout_constraintTop_toBottomOf="@id/question_iv" />
 
     <TextView
         android:id="@+id/option_three_tv"
@@ -76,7 +85,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/option_four_tv"
-
         >
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

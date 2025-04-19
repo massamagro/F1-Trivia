@@ -10,7 +10,8 @@ data class WikiResponse(
 
 @JsonClass(generateAdapter = true)
 data class WikiItem(
-    @Json(name = "srcset") val srcset: List<WikiSrc>
+    @Json(name = "srcset") val srcset: List<WikiSrc>,
+    @Json(name = "leadImage") val leadImage: Boolean
 )
 
 @JsonClass(generateAdapter = true)

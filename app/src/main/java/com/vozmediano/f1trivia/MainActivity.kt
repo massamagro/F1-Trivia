@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.vozmediano.f1trivia.databinding.ActivityMainBinding
 import com.vozmediano.f1trivia.domain.model.quiz.Option
 import kotlinx.coroutines.flow.collectLatest
@@ -61,12 +62,15 @@ class MainActivity : AppCompatActivity() {
             viewModel.question.collectLatest { question ->
                 question?.let {
                     Log.d("MainActivity", "Question: ${it.title}")
+                    Glide
+                        .with(binding.questionIv.context)
+                        .load("https:${it.image}")
+                        .into(binding.questionIv)
                     binding.questionTv.text = it.title
                     currentOptions = it.options
                     resetButtons(optionsTv)
                     optionsTv.forEachIndexed { index, textView ->
                         textView.text = it.options[index].shortText
-
                     }
                 }
             }
