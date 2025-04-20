@@ -11,8 +11,6 @@ fun WikiResponse.toDomain(title:String) = Image(
     //imageUrls = this.items.filter{ it.leadImage }.first().srcset.first().src
 )
 
-
-
 fun Image.toDatabase() = ImageEntity(
     title = title,
     imageUrls = imageUrls
@@ -23,9 +21,10 @@ fun ImageEntity.toDomain() = Image(
     imageUrls = imageUrls
 )
 
-
 fun getUrls(items: List<WikiItem>): List<String> {
     val urls = mutableListOf<String>()
-    items.filter { it.type == "image" }.forEach{ urls.add( it.srcset.first().src )}
+    items.filter { it.type == "image" }.forEach{
+        it.srcset.last { !it.src.contains("logo") }
+        .let { it1 -> urls.add( it1.src ) } }
     return urls
 }

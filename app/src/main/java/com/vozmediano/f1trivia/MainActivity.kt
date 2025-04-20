@@ -78,7 +78,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun generateQuestion() {
-        when ((1..4).random()) {
+        var n = (1..4).random()
+        var lastQuestion = 0
+        if(lastQuestion == n) generateQuestion()
+        lastQuestion = n
+        when (n) {
             1 -> viewModel.fetchQuestionDriverBySeasonAndCircuitAndPosition()
             2 -> viewModel.fetchQuestionDriverByNationality()
             3 -> viewModel.fetchQuestionDriverByWinsAtCircuit()
