@@ -218,9 +218,9 @@ class MainViewModel(
             initializer {
                 val application = this[APPLICATION_KEY] as F1TriviaApplication
                 MainViewModel(
-                    WhoWonAtCircuitAndSeasonUseCase(application.f1ResultRepository),
-                    DriverByNationalityUseCase(application.f1DriverRepository),
-                    MostWinsByCircuitUseCase(application.f1RaceRepository, application.f1CircuitRepository),
+                    WhoWonAtCircuitAndSeasonUseCase(application.f1ResultRepository, application.f1RaceRepository, application.wikiRepository),
+                    DriverByNationalityUseCase(application.f1DriverRepository, application.wikiRepository),
+                    MostWinsByCircuitUseCase(application.f1RaceRepository, application.f1CircuitRepository, application.wikiRepository),
                     MostPodiumsByCircuitUseCase(application.f1RaceRepository, application.f1CircuitRepository, application.wikiRepository)
                 )
             }

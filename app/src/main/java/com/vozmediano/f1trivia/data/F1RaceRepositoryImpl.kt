@@ -26,10 +26,10 @@ class F1RaceRepositoryImpl(
             emptyList()
         }
     }
-/*
-    override suspend fun getRaceBySeasonAndCircuit(season: String, circuitId: String): Race {
+
+    override suspend fun getRaceBySeasonAndRound(season: String, round: String): Race {
         return try {
-            val response = f1service.getRaceBySeasonAndCircuit(season, circuitId)
+            val response = f1service.getRaceBySeasonAndCircuit(season, round)
             val race = response.mrData.raceTable!!.racesDto!!.first().toDomain()
             race
         } catch (e: Exception) {
@@ -38,5 +38,5 @@ class F1RaceRepositoryImpl(
         }
     }
 
-     */
+
 }

@@ -70,13 +70,13 @@ interface F1Service {
         @Query("limit") limit: Int
     ): MRDataResponse
 
-    /*
-    @GET("{season}/circuits/{circuitId}/results/")
+
+    @GET("{season}/{round}/results/")
     suspend fun getRaceBySeasonAndCircuit(
         @Path("season") season: String,
-        @Path("circuitId") circuitId: String
+        @Path("round") round: String
     ): MRDataResponse
-     */
+
 
     //RESULTS
     @GET("{season}/results/")

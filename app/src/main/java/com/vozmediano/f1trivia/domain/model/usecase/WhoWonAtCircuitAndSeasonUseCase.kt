@@ -1,15 +1,22 @@
 package com.vozmediano.f1trivia.domain.model.usecase
 
 import android.util.Log
+import com.vozmediano.f1trivia.domain.F1RaceRepository
 import com.vozmediano.f1trivia.domain.F1ResultRepository
+import com.vozmediano.f1trivia.domain.WikiRepository
 import com.vozmediano.f1trivia.domain.model.f1.Driver
+import com.vozmediano.f1trivia.domain.model.f1.Race
 import com.vozmediano.f1trivia.domain.model.quiz.Option
 import com.vozmediano.f1trivia.domain.model.quiz.Question
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 class WhoWonAtCircuitAndSeasonUseCase(
-    private val f1ResultRepository: F1ResultRepository
+    private val f1ResultRepository: F1ResultRepository,
+    private val f1RaceRepository: F1RaceRepository,
+    private val wikiRepository: WikiRepository
 ) {
     suspend operator fun invoke(): Question? = withContext(Dispatchers.IO) {
         val correctSeason = (2022..2025).random().toString()
@@ -28,9 +35,26 @@ class WhoWonAtCircuitAndSeasonUseCase(
         val correctRaceName = correctResults.first().raceName
         Log.i("WhoWonAtCircuitAndSeasonUseCase", "$correctSeason - ($correctRound) - $correctRaceName")
 
+        //this call is made just for wiki image
+        lateinit var race: Race
+        try{
+            race = f1RaceRepository.getRaceBySeasonAndRound(correctSeason, correctRound!!)
+            Log.i("WhoWonAtCircuitAndSeasonUseCase", "race fetched: ${race.season} - ${race.round} - ${race.circuit.circuitId}")
+        } catch (e: Exception){
+            Log.i("WhoWonAtCircuitAndSeasonUseCase","error: ${e.message}")
+        }
+
+        Log.i("WhoWonAtCircuitAndSeasonUseCase", "race.url: ${race.url}")
+
+        var title = URLDecoder
+            .decode(race.url, StandardCharsets.UTF_8.name())
+            .substringAfterLast("/")
+        var imageUrl = wikiRepository.getImage(title)
+
         val question = Question(
             title = "Who won the $correctRaceName in $correctSeason?",
-            options = mutableListOf()
+            options = mutableListOf(),
+            image = imageUrl
         )
         val driverSet = mutableSetOf<String>()
 

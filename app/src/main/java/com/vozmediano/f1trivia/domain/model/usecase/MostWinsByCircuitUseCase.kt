@@ -3,14 +3,18 @@ package com.vozmediano.f1trivia.domain.model.usecase
 import android.util.Log
 import com.vozmediano.f1trivia.domain.F1CircuitRepository
 import com.vozmediano.f1trivia.domain.F1RaceRepository
+import com.vozmediano.f1trivia.domain.WikiRepository
 import com.vozmediano.f1trivia.domain.model.f1.Driver
 import com.vozmediano.f1trivia.domain.model.quiz.Question
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 class MostWinsByCircuitUseCase(
     private val f1RaceRepository: F1RaceRepository,
-    private val f1CircuitRepository: F1CircuitRepository
+    private val f1CircuitRepository: F1CircuitRepository,
+    private val wikiRepository: WikiRepository
 ) {
     suspend operator fun invoke(): Question? = withContext(Dispatchers.IO) {
         val circuits = try {
@@ -38,9 +42,18 @@ class MostWinsByCircuitUseCase(
             }
             Log.i("MostWinsByCircuitUseCase", "Race results: $raceResults")
 
+            Log.i("MostWinsByCircuitUseCase", "circuit.url: ${correctCircuit.url}")
+            var title = URLDecoder
+                .decode(correctCircuit.url, StandardCharsets.UTF_8.name())
+                .substringAfterLast("/")
+            Log.i("MostWinsByCircuitUseCase", "title: $title")
+            var imageUrl = wikiRepository.getImage(title)
+            Log.i("MostWinsByCircuitUseCase", "wiki url: $imageUrl")
+
             question = Question(
                 title = "Who has the most wins at ${correctCircuit.circuitName}?",
-                options = mutableListOf()
+                options = mutableListOf(),
+                image = imageUrl
             )
 
             val driverSet = mutableSetOf<String>()
