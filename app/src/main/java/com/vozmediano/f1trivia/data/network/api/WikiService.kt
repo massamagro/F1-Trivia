@@ -6,7 +6,7 @@ import retrofit2.http.Path
 
 interface WikiService {
     @GET("page/media-list/{title}")
-    suspend fun getImage(
+    suspend fun getAllImages(
         @Path("title") title: String
     ): WikiResponse
 }

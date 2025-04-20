@@ -12,7 +12,7 @@ class WikiRepositoryImpl(
 ) : WikiRepository{
     override suspend fun getImage(title: String): String {
         return try{
-            val url = imageDao.getImage(title).imageUrl
+            val url = imageDao.getImage(title).imageUrls.random()
             Log.i("WikiRepositoryImpl", "url retrieved from database")
             Log.i("WikiRepositoryImpl", "url: $url")
             url
@@ -20,7 +20,7 @@ class WikiRepositoryImpl(
             Log.i("WikiRepositoryImpl","Error fetching url from database: ${e.message}")
             var url = ""
             try{
-                url = wikiService.getImage(title).toDomain(title).imageUrl
+                url = wikiService.getAllImages(title).toDomain(title).imageUrls.random()
                 Log.i("WikiRepositoryImpl", "url retrieved from API")
             }
             catch (e: Exception){
