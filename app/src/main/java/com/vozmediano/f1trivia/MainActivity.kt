@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun generateQuestion() {
-        var n = (1..4).random()
+        var n = (1..1).random()
         var lastQuestion = 0
         if(lastQuestion == n) generateQuestion()
         lastQuestion = n

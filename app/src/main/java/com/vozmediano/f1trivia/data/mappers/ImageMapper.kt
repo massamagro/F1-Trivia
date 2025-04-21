@@ -24,7 +24,11 @@ fun ImageEntity.toDomain() = Image(
 fun getUrls(items: List<WikiItem>): List<String> {
     val urls = mutableListOf<String>()
     items.filter { it.type == "image" }.forEach{
-        it.srcset.last { !it.src.contains("logo") }
-        .let { it1 -> urls.add( it1.src ) } }
+        it.srcset?.last { !it.src.contains("logo") }
+        .let { it1 ->
+            if (it1 != null) {
+                urls.add( it1.src )
+            }
+        } }
     return urls
 }

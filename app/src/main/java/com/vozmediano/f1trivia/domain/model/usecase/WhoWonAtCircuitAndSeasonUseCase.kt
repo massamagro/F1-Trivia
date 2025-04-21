@@ -19,7 +19,7 @@ class WhoWonAtCircuitAndSeasonUseCase(
     private val wikiRepository: WikiRepository
 ) {
     suspend operator fun invoke(): Question? = withContext(Dispatchers.IO) {
-        val correctSeason = (2022..2025).random().toString()
+        val correctSeason = (2003..2025).random().toString()
 
         val results = try {
             Log.i("WhoWonAtCircuitAndSeasonUseCase", "Fetching circuits")
