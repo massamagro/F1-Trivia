@@ -21,4 +21,5 @@ interface CircuitDao {
 
     @Upsert
     suspend fun upsert(circuit: CircuitEntity)
+
 }

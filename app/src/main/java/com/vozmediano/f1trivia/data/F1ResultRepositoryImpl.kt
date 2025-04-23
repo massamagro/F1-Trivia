@@ -76,4 +76,13 @@ class F1ResultRepositoryImpl(
         return results
     }
 
+    override suspend fun clearAllData() {
+        try {
+            resultDao.clearAll()
+            Log.i("F1ResultRepositoryImpl", "All results cleared from database")
+        } catch (e: Exception) {
+            Log.i("F1ResultRepositoryImpl", "Error clearing results from database: ${e.message}")
+        }
+    }
+
 }

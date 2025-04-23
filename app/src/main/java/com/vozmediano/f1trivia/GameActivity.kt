@@ -10,22 +10,22 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.vozmediano.f1trivia.databinding.ActivityMainBinding
+import com.vozmediano.f1trivia.databinding.ActivityGameBinding
 import com.vozmediano.f1trivia.domain.model.quiz.Option
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity() {
+class GameActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityGameBinding
     private lateinit var optionsTv: List<TextView>
 
     private var currentOptions: List<Option> = emptyList()
-    private val viewModel: MainViewModel by viewModels { MainViewModel.Factory }
+    private val viewModel: GameViewModel by viewModels { GameViewModel.Factory }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityGameBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
@@ -36,10 +36,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         optionsTv = listOf(
-            binding.optionOneTv,
-            binding.optionTwoTv,
-            binding.optionThreeTv,
-            binding.optionFourTv
+            binding.tvOptionOne,
+            binding.tvOptionTwo,
+            binding.tvOptionThree,
+            binding.tvOptionFour
         )
 
         setupClickListeners()
@@ -63,10 +63,10 @@ class MainActivity : AppCompatActivity() {
                 question?.let {
                     Log.d("MainActivity", "Question: ${it.title}")
                     Glide
-                        .with(binding.questionIv.context)
+                        .with(binding.ivQuestion.context)
                         .load("https:${it.image}")
-                        .into(binding.questionIv)
-                    binding.questionTv.text = it.title
+                        .into(binding.ivQuestion)
+                    binding.tvQuestion.text = it.title
                     currentOptions = it.options
                     resetButtons(optionsTv)
                     optionsTv.forEachIndexed { index, textView ->
@@ -103,18 +103,18 @@ class MainActivity : AppCompatActivity() {
 
         currentOptions.forEachIndexed { index, option ->
             if (option.isCorrect) {
-                binding.questionTv.text = option.longText
+                binding.tvQuestion.text = option.longText
             }
             optionsTv[index].isEnabled = false
         }
 
 
         if (isCorrect) {
-            //binding.pointsValueTv.text = (binding.pointsValueTv.text.toString().toInt() + 1).toString()
-            (binding.pointsValueTv.text.toString().toInt() + 1).toString()
-                .also { binding.pointsValueTv.text = it }
+            //binding.tvPointsValue.text = (binding.tvPointsValue.text.toString().toInt() + 1).toString()
+            (binding.tvPointsValue.text.toString().toInt() + 1).toString()
+                .also { binding.tvPointsValue.text = it }
         } else {
-            binding.pointsValueTv.text = "0"
+            binding.tvPointsValue.text = "0"
         }
 
         lifecycleScope.launch {

@@ -6,4 +6,5 @@ interface F1ConstructorRepository {
     suspend fun getConstructors(): List<Constructor>
     suspend fun getConstructorById(constructorId: String): Constructor
     suspend fun getConstructorsBySeason(season: String): List<Constructor>
+    suspend fun clearAllData()
 }

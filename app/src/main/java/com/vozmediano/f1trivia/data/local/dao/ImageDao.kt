@@ -8,4 +8,8 @@ import com.vozmediano.f1trivia.data.local.entities.ImageEntity
 interface ImageDao {
     @Query("SELECT * FROM images WHERE title = :title")
     suspend fun getImage(title: String): ImageEntity
+
+
+    @Query("DELETE FROM images")
+    suspend fun clearAll()
 }

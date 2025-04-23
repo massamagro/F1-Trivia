@@ -14,5 +14,5 @@ data class RaceEntity(
     @Embedded val circuit: CircuitEntity,
     val date: String,
     val time: String? = null,
-    @Embedded val results: List<ResultEntity>?  = emptyList()
+    //@Embedded val results: List<ResultEntity>?  = emptyList()
 )

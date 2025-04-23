@@ -11,5 +11,6 @@ interface F1DriverRepository {
         circuit: String,
         position: String
     ): Driver*/
+    suspend fun clearAllData()
 
 }

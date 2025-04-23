@@ -5,6 +5,7 @@ import com.vozmediano.f1trivia.data.local.dao.ImageDao
 import com.vozmediano.f1trivia.data.mappers.toDomain
 import com.vozmediano.f1trivia.data.network.api.WikiService
 import com.vozmediano.f1trivia.domain.WikiRepository
+import com.vozmediano.f1trivia.domain.model.wiki.Image
 
 class WikiRepositoryImpl(
     private val wikiService: WikiService,
@@ -28,6 +29,15 @@ class WikiRepositoryImpl(
             }
             Log.i("WikiRepositoryImpl", "url: $url")
             url
+        }
+    }
+
+    override suspend fun clearAllData() {
+        try {
+            imageDao.clearAll()
+            Log.i("WikiRepositoryImpl", "All data cleared from database")
+        } catch (e: Exception) {
+            Log.i("WikiRepositoryImpl", "Error clearing data from database: ${e.message}")
         }
     }
 }

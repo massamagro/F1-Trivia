@@ -94,22 +94,31 @@ class F1DriverRepositoryImpl(
             emptyList()
         }
     }
-/*
-    override suspend fun getDriverBySeasonAndCircuitAndPosition(
-        season: String,
-        circuit: String,
-        position: String
-    ): Driver {
 
-        val response = f1Service.getDriverBySeasonAndCircuitAndPosition(season, circuit, position)
-        Log.i("F1DriverRepositoryImpl", "Response: $response")
-        val driver = response.mrData.raceTable?.racesDto
-            ?.firstOrNull()
-            ?.results
-            ?.firstOrNull()
-            ?.driverDto
-            ?.toDomain()
-        return driver
-            ?: throw Exception("Driver not found")
-    }*/
+    override suspend fun clearAllData() {
+        try {
+            driverDao.clearAll()
+            Log.i("F1DriverRepositoryImpl", "All drivers cleared from database")
+        } catch (e: Exception) {
+            Log.i("F1DriverRepositoryImpl", "Error clearing drivers from database: ${e.message}")
+        }
+    }
+    /*
+        override suspend fun getDriverBySeasonAndCircuitAndPosition(
+            season: String,
+            circuit: String,
+            position: String
+        ): Driver {
+
+            val response = f1Service.getDriverBySeasonAndCircuitAndPosition(season, circuit, position)
+            Log.i("F1DriverRepositoryImpl", "Response: $response")
+            val driver = response.mrData.raceTable?.racesDto
+                ?.firstOrNull()
+                ?.results
+                ?.firstOrNull()
+                ?.driverDto
+                ?.toDomain()
+            return driver
+                ?: throw Exception("Driver not found")
+        }*/
 }

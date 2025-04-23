@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class MainViewModel(
+class GameViewModel(
     private val whoWonAtCircuitAndSeasonUseCase: WhoWonAtCircuitAndSeasonUseCase,
     private val driverByNationalityUseCase: DriverByNationalityUseCase,
     private val mostWinsByCircuitUseCase: MostWinsByCircuitUseCase,
@@ -217,7 +217,7 @@ class MainViewModel(
         val Factory = viewModelFactory {
             initializer {
                 val application = this[APPLICATION_KEY] as F1TriviaApplication
-                MainViewModel(
+                GameViewModel(
                     WhoWonAtCircuitAndSeasonUseCase(application.f1ResultRepository, application.f1RaceRepository, application.wikiRepository),
                     DriverByNationalityUseCase(application.f1DriverRepository, application.wikiRepository),
                     MostWinsByCircuitUseCase(application.f1RaceRepository, application.f1CircuitRepository, application.wikiRepository),

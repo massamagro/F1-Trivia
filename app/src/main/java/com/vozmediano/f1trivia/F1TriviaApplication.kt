@@ -76,13 +76,14 @@ class F1TriviaApplication : Application() {
         val constructorDao = f1Database.constructorDao()
         val circuitDao = f1Database.circuitDao()
         val resultDao = f1Database.resultDao()
+        val raceDao = f1Database.raceDao()
         val imageDao = wikiDatabase.imageDao()
 
         f1DriverRepository = F1DriverRepositoryImpl(f1Service, driverDao)
         f1ConstructorRepository = F1ConstructorRepositoryImpl(f1Service, constructorDao)
         f1CircuitRepository = F1CircuitRepositoryImpl(f1Service, circuitDao)
         f1ResultRepository = F1ResultRepositoryImpl(f1Service, resultDao)
-        f1RaceRepository = F1RaceRepositoryImpl(f1Service)
+        f1RaceRepository = F1RaceRepositoryImpl(f1Service, raceDao)
         wikiRepository = WikiRepositoryImpl(wikiService, imageDao)
 
 

@@ -18,4 +18,8 @@ interface ResultDao {
 
     @Upsert
     suspend fun upsert(result: ResultEntity)
+
+    @Query("DELETE FROM results")
+    suspend fun clearAll()
+
 }

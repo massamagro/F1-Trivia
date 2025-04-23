@@ -64,4 +64,13 @@ class F1CircuitRepositoryImpl(
             return emptyList()
         }
     }
+
+    override suspend fun clearAllData() {
+        try {
+            circuitDao.clearAll()
+            Log.i("F1CircuitRepositoryImpl", "All circuits cleared from database")
+        } catch (e: Exception) {
+            Log.i("F1CircuitRepositoryImpl", "Error clearing circuits from database: ${e.message}")
+        }
+    }
 }

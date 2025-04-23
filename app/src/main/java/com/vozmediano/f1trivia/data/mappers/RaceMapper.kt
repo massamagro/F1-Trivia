@@ -25,7 +25,7 @@ fun Race.toDatabase() = RaceEntity(
     raceName = raceName,
     circuit = circuit.toDatabase(),
     date = date,
-    results = results?.map { it.toDatabase() }
+    //results = results?.map { it.toDatabase() }
 )
 
 fun RaceEntity.toDomain() = Race(
@@ -36,6 +36,6 @@ fun RaceEntity.toDomain() = Race(
     raceName = raceName,
     circuit = circuit.toDomain(),
     date = date,
-    results = results?.map { it.toDomain() } ?: emptyList()
+    //results = results?.map { it.toDomain() } ?: emptyList()
 )
 

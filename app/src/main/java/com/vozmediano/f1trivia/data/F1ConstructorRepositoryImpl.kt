@@ -93,4 +93,13 @@ class F1ConstructorRepositoryImpl(
             emptyList()
         }
     }
+
+    override suspend fun clearAllData() {
+        try {
+            constructorDao.clearAll()
+            Log.i("F1ConstructorRepositoryImpl", "cleared all constructors from database")
+        } catch (e: Exception) {
+            Log.i("F1ConstructorRepositoryImpl", "Error clearing constructors from database: ${e.message}")
+        }
+    }
 }
