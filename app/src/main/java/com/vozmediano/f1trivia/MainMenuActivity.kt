@@ -27,5 +27,9 @@ class MainMenuActivity : AppCompatActivity() {
             var intent = Intent(this,GameActivity::class.java)
             startActivity(intent)
         }
+        binding.btnSettings.setOnClickListener{
+            var intent = Intent(this,SettingsActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

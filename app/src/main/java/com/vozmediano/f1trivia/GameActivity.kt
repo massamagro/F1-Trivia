@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -78,11 +79,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun generateQuestion() {
-        var n = (1..1).random()
-        var lastQuestion = 0
-        if(lastQuestion == n) generateQuestion()
-        lastQuestion = n
-        when (n) {
+        when ((1..4).random()) {
             1 -> viewModel.fetchQuestionDriverBySeasonAndCircuitAndPosition()
             2 -> viewModel.fetchQuestionDriverByNationality()
             3 -> viewModel.fetchQuestionDriverByWinsAtCircuit()
@@ -113,13 +110,24 @@ class GameActivity : AppCompatActivity() {
             //binding.tvPointsValue.text = (binding.tvPointsValue.text.toString().toInt() + 1).toString()
             (binding.tvPointsValue.text.toString().toInt() + 1).toString()
                 .also { binding.tvPointsValue.text = it }
+            lifecycleScope.launch {
+                generateQuestion()
+            }
         } else {
+            val score = binding.tvPointsValue.text.toString().toInt()
             binding.tvPointsValue.text = "0"
+
+            AlertDialog.Builder(this)
+                .setTitle("Game over")
+                .setMessage("Score: $score")
+                .setPositiveButton("OK") { _, _ ->
+                    onBackPressedDispatcher.onBackPressed()
+                }
+                .show()
+
         }
 
-        lifecycleScope.launch {
-            generateQuestion()
-        }
+
     }
 
 
