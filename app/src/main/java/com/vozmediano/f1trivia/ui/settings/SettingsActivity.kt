@@ -66,9 +66,6 @@ class SettingsActivity : AppCompatActivity() {
                 ).signOut().addOnCompleteListener {
                     updateLoginButtonState() // Update button after logout
                     Snackbar.make(binding.root, "Logged out successfully", Snackbar.LENGTH_SHORT).show()
-                    // Optional: Navigate back to LoginActivity or another appropriate screen
-                    // startActivity(Intent(this, LoginActivity::class.java))
-                    // finish()
                 }
             }
         }

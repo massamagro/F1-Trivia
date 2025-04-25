@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.vozmediano.f1trivia.R
-import com.vozmediano.f1trivia.ui.MainMenu.MainMenuActivity
+import com.vozmediano.f1trivia.ui.mainmenu.MainMenuActivity
 
 class LoginActivity : AppCompatActivity() {
 

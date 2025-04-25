@@ -1,4 +1,4 @@
-package com.vozmediano.f1trivia.ui.MainMenu
+package com.vozmediano.f1trivia.ui.mainmenu
 
 import android.content.Intent
 import android.os.Bundle
@@ -44,7 +44,13 @@ class MainMenuActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        Log.i("MainMenuActivity", "onCreate called")
         checkLoginStatus() // Initial check when the activity is created
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i("MainMenuActivity", "onStart called")
     }
 
     override fun onResume() {
@@ -53,19 +59,34 @@ class MainMenuActivity : AppCompatActivity() {
         checkLoginStatus() // Re-check login status every time the activity resumes
     }
 
+    override fun onPause() {
+        super.onPause()
+        Log.i("MainMenuActivity", "onPause called")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i("MainMenuActivity", "onStop called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i("MainMenuActivity", "onDestroy called")
+    }
+
     private fun checkLoginStatus() {
         val currentUser = auth.currentUser
         Log.i("MainMenuActivity", "(Check login status) Current user: $currentUser")
         if (currentUser != null) {
             // User is logged in, retrieve the username
-            Log.i("MainMenuActivity", "(Check login status) User is logged in: ${currentUser.uid}")
+            Log.i("MainMenuActivity", "(Check login status) User is logged in: ${currentUser?.uid}")
             retrieveUsername(currentUser.uid)
-            etLogin.setOnClickListener{}
+            etLogin.setOnClickListener {}
         } else {
             // User is not logged in
             Log.i("MainMenuActivity", "(Check login status) User is not logged in")
             etLogin.text = "Not logged in"
-            etLogin.setOnClickListener{
+            etLogin.setOnClickListener {
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
             }

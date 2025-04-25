@@ -11,6 +11,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.vozmediano.f1trivia.R
 import com.vozmediano.f1trivia.databinding.ActivityGameBinding
 import com.vozmediano.f1trivia.domain.model.quiz.Option
@@ -116,7 +118,9 @@ class GameActivity : AppCompatActivity() {
             }
         } else {
             val score = binding.tvPointsValue.text.toString().toInt()
-            binding.tvPointsValue.text = "0"
+            //binding.tvPointsValue.text = "0"
+
+            if(isUserLoggedIn()) saveScore(score)
 
             AlertDialog.Builder(this)
                 .setTitle("Game over")
@@ -125,12 +129,33 @@ class GameActivity : AppCompatActivity() {
                     onBackPressedDispatcher.onBackPressed()
                 }
                 .show()
-
         }
-
-
     }
 
+    private fun isUserLoggedIn(): Boolean {
+        Log.i("GameActivity", "(isUserLoggedIn) Checking login status")
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        Log.i("GameActivity", "(isUserLoggedIn) Current user: $currentUser")
+        return currentUser != null
+    }
+
+    private fun saveScore(score: Int) {
+        Log.i("GameActivity", "Saving score: $score")
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        val scoreRef = FirebaseFirestore.getInstance().collection("scores")
+        val scoreMap = mapOf(
+            "uid" to uid,
+            "score" to score,
+            "timestamp" to System.currentTimeMillis()
+        )
+        scoreRef.add(scoreMap)
+            .addOnSuccessListener {
+                Log.i("GameActivity", "Score saved successfully!")
+            }
+            .addOnFailureListener { e ->
+                Log.e("GameActivity", "Error saving score: ${e.message}")
+            }
+        }
 
     private fun resetButtons(buttons: List<TextView>) {
         buttons.forEach { button ->
