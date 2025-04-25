@@ -5,7 +5,23 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainMenuActivity">
+    tools:context=".ui.MainMenu.MainMenuActivity">
+
+
+    <TextView
+        android:id="@+id/et_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="40dp"
+        tools:text="log in text"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        />
+
+
 
 
     <ImageButton

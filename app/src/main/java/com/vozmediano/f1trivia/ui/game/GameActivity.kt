@@ -1,4 +1,4 @@
-package com.vozmediano.f1trivia
+package com.vozmediano.f1trivia.ui.game
 
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.vozmediano.f1trivia.R
 import com.vozmediano.f1trivia.databinding.ActivityGameBinding
 import com.vozmediano.f1trivia.domain.model.quiz.Option
 import kotlinx.coroutines.flow.collectLatest

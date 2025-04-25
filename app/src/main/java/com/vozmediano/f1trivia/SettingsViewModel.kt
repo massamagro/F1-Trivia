@@ -1,20 +1,17 @@
-package com.vozmediano.f1trivia
+package com.vozmediano.f1trivia.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.vozmediano.f1trivia.F1TriviaApplication
 import com.vozmediano.f1trivia.domain.F1CircuitRepository
 import com.vozmediano.f1trivia.domain.F1ConstructorRepository
 import com.vozmediano.f1trivia.domain.F1DriverRepository
 import com.vozmediano.f1trivia.domain.F1RaceRepository
 import com.vozmediano.f1trivia.domain.F1ResultRepository
 import com.vozmediano.f1trivia.domain.WikiRepository
-import com.vozmediano.f1trivia.domain.model.usecase.DriverByNationalityUseCase
-import com.vozmediano.f1trivia.domain.model.usecase.MostPodiumsByCircuitUseCase
-import com.vozmediano.f1trivia.domain.model.usecase.MostWinsByCircuitUseCase
-import com.vozmediano.f1trivia.domain.model.usecase.WhoWonAtCircuitAndSeasonUseCase
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(

@@ -1,4 +1,4 @@
-package com.vozmediano.f1trivia
+package com.vozmediano.f1trivia.ui.game
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.vozmediano.f1trivia.F1TriviaApplication
 import com.vozmediano.f1trivia.domain.model.quiz.Question
 import com.vozmediano.f1trivia.domain.model.usecase.DriverByNationalityUseCase
 import com.vozmediano.f1trivia.domain.model.usecase.MostPodiumsByCircuitUseCase

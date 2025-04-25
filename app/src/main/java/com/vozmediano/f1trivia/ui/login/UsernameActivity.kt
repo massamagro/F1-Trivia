@@ -1,4 +1,4 @@
-package com.vozmediano.f1trivia
+package com.vozmediano.f1trivia.ui.login
 
 import android.app.Activity
 import android.os.Bundle
