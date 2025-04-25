@@ -2,6 +2,8 @@ package com.vozmediano.f1trivia
 
 import android.app.Application
 import androidx.room.Room
+import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.vozmediano.f1trivia.data.F1CircuitRepositoryImpl
@@ -27,6 +29,7 @@ class F1TriviaApplication : Application() {
     lateinit var f1RaceRepository: F1RaceRepositoryImpl
     lateinit var f1ResultRepository: F1ResultRepositoryImpl
     lateinit var wikiRepository: WikiRepository
+    lateinit var firestore: FirebaseFirestore
 
     private fun getF1Service(): F1Service {
         val client = OkHttpClient.Builder()
@@ -62,8 +65,15 @@ class F1TriviaApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        // Initialize the repositories
         val f1Service = getF1Service()
         val wikiService = getWikiService()
+
+        // Initialize Firestore
+        firestore = FirebaseFirestore.getInstance()
+
+        // Initialize the repositories
         val f1Database = Room.databaseBuilder(
             applicationContext,
             F1Database::class.java, "f1-database"
@@ -72,6 +82,8 @@ class F1TriviaApplication : Application() {
             applicationContext,
             WikiDatabase::class.java, "wiki-database"
         ).build()
+
+        // Initialize the DAOs
         val driverDao = f1Database.driverDao()
         val constructorDao = f1Database.constructorDao()
         val circuitDao = f1Database.circuitDao()
@@ -85,6 +97,9 @@ class F1TriviaApplication : Application() {
         f1ResultRepository = F1ResultRepositoryImpl(f1Service, resultDao)
         f1RaceRepository = F1RaceRepositoryImpl(f1Service, raceDao)
         wikiRepository = WikiRepositoryImpl(wikiService, imageDao)
+
+        // Initialize Firebase
+        FirebaseApp.initializeApp(this)
 
 
 

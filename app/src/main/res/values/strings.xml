@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">F1Trivia</string>
+    <string name="default_web_client_id">195613838280-4r5lfehmf8cni8ftbnkn89mpp91m0vg8.apps.googleusercontent.com</string>
+    <string name="title_activity_login">LoginActivity</string>
 </resources>

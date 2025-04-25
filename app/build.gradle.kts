@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -10,6 +11,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
     }
 
     defaultConfig {
@@ -47,6 +49,14 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    //implementation(libs.firebase.common.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -62,6 +72,10 @@ dependencies {
 
     //room
     implementation("androidx.room:room-runtime:2.6.1")
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     testImplementation("androidx.room:room-testing:2.6.1")
@@ -72,4 +86,13 @@ dependencies {
     //gson
     implementation("com.google.code.gson:gson:2.10.1")
 
+    //google sign-in
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-common-ktx")
 }
+
