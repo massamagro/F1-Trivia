@@ -1,6 +1,7 @@
 package com.vozmediano.f1trivia
 
 import android.app.Application
+import android.util.Log
 import androidx.room.Room
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -30,6 +31,51 @@ class F1TriviaApplication : Application() {
     lateinit var f1ResultRepository: F1ResultRepositoryImpl
     lateinit var wikiRepository: WikiRepository
     lateinit var firestore: FirebaseFirestore
+
+    override fun onCreate() {
+        super.onCreate()
+
+        // Initialize Firebase
+        FirebaseApp.initializeApp(this)
+        Log.i("F1TriviaApplication", "Firebase initialized")
+
+        // Initialize the services
+        val f1Service = getF1Service()
+        val wikiService = getWikiService()
+        Log.i("F1TriviaApplication", "Services initialized")
+
+        // Initialize Firestore
+        firestore = FirebaseFirestore.getInstance()
+        Log.i("F1TriviaApplication", "Firestore initialized")
+
+        // Initialize the databases
+        val f1Database = Room.databaseBuilder(
+            applicationContext,
+            F1Database::class.java, "f1-database"
+        ).build()
+        Log.i("F1TriviaApplication", "F1Database initialized")
+        val wikiDatabase = Room.databaseBuilder(
+            applicationContext,
+            WikiDatabase::class.java, "wiki-database"
+        ).build()
+        Log.i("F1TriviaApplication", "WikiDatabase initialized")
+
+        // Initialize the DAOs
+        val driverDao = f1Database.driverDao()
+        val constructorDao = f1Database.constructorDao()
+        val circuitDao = f1Database.circuitDao()
+        val resultDao = f1Database.resultDao()
+        val raceDao = f1Database.raceDao()
+        val imageDao = wikiDatabase.imageDao()
+
+        f1DriverRepository = F1DriverRepositoryImpl(f1Service, driverDao)
+        f1ConstructorRepository = F1ConstructorRepositoryImpl(f1Service, constructorDao)
+        f1CircuitRepository = F1CircuitRepositoryImpl(f1Service, circuitDao)
+        f1ResultRepository = F1ResultRepositoryImpl(f1Service, resultDao)
+        f1RaceRepository = F1RaceRepositoryImpl(f1Service, raceDao)
+        wikiRepository = WikiRepositoryImpl(wikiService, imageDao)
+
+    }
 
     private fun getF1Service(): F1Service {
         val client = OkHttpClient.Builder()
@@ -61,48 +107,6 @@ class F1TriviaApplication : Application() {
             .build()
 
         return retrofit.create(WikiService::class.java)
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-
-        // Initialize the repositories
-        val f1Service = getF1Service()
-        val wikiService = getWikiService()
-
-        // Initialize Firestore
-        firestore = FirebaseFirestore.getInstance()
-
-        // Initialize the repositories
-        val f1Database = Room.databaseBuilder(
-            applicationContext,
-            F1Database::class.java, "f1-database"
-        ).build()
-        val wikiDatabase = Room.databaseBuilder(
-            applicationContext,
-            WikiDatabase::class.java, "wiki-database"
-        ).build()
-
-        // Initialize the DAOs
-        val driverDao = f1Database.driverDao()
-        val constructorDao = f1Database.constructorDao()
-        val circuitDao = f1Database.circuitDao()
-        val resultDao = f1Database.resultDao()
-        val raceDao = f1Database.raceDao()
-        val imageDao = wikiDatabase.imageDao()
-
-        f1DriverRepository = F1DriverRepositoryImpl(f1Service, driverDao)
-        f1ConstructorRepository = F1ConstructorRepositoryImpl(f1Service, constructorDao)
-        f1CircuitRepository = F1CircuitRepositoryImpl(f1Service, circuitDao)
-        f1ResultRepository = F1ResultRepositoryImpl(f1Service, resultDao)
-        f1RaceRepository = F1RaceRepositoryImpl(f1Service, raceDao)
-        wikiRepository = WikiRepositoryImpl(wikiService, imageDao)
-
-        // Initialize Firebase
-        FirebaseApp.initializeApp(this)
-
-
-
     }
 }
 

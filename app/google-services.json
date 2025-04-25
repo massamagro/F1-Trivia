@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "195613838280",
+    "project_id": "f1trivia-2d19f",
+    "storage_bucket": "f1trivia-2d19f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:195613838280:android:bff0848795fbc83b44cefd",
+        "android_client_info": {
+          "package_name": "com.vozmediano.f1trivia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "195613838280-88ulto74d7lg32f7a3er8l0as8a4jfh7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vozmediano.f1trivia",
+            "certificate_hash": "819639ac0bb0eec172c647e156305e0ba4a6e7a5"
+          }
+        },
+        {
+          "client_id": "195613838280-4r5lfehmf8cni8ftbnkn89mpp91m0vg8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0ODnlXQ6E4Cu0VW6mtLjvKqz7zJdBofY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "195613838280-4r5lfehmf8cni8ftbnkn89mpp91m0vg8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
