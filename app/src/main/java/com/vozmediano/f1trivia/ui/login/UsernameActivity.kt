@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.vozmediano.f1trivia.databinding.ActivityUsernameBinding
+import com.vozmediano.f1trivia.util.isValidUsername
 
 class UsernameActivity : AppCompatActivity() {
 
@@ -29,13 +30,15 @@ class UsernameActivity : AppCompatActivity() {
 
         binding.btnSubmit.setOnClickListener {
             val username = binding.etUsername.text.toString().trim()
+            val errorMessage = username.isValidUsername(1, 15)
 
-            if (username.isNotEmpty()) {
+            if (errorMessage == null) {
                 checkUsernameAvailability(username)
             } else {
-                binding.etUsername.error = "Username cannot be empty"
+                binding.etUsername.error = errorMessage
             }
         }
+
     }
 
     private fun checkUsernameAvailability(username: String) {

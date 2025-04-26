@@ -14,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.vozmediano.f1trivia.ui.login.ChangeUsernameActivity
 import com.vozmediano.f1trivia.databinding.ActivitySettingsBinding
 import com.vozmediano.f1trivia.ui.login.LoginActivity
 
@@ -78,14 +79,21 @@ class SettingsActivity : AppCompatActivity() {
                 Log.i("SettingsActivity", "Error refreshing data: ${e.message}")
             }
         }
+
+        binding.btnChangeUsername.setOnClickListener {
+            val intent = Intent(this, ChangeUsernameActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun updateLoginButtonState() {
         val currentUser = auth.currentUser
         if (currentUser == null) {
             binding.btnLogin.text = "Login"
+            binding.btnChangeUsername.isEnabled = false
         } else {
             binding.btnLogin.text = "Logout"
+            binding.btnChangeUsername.isEnabled = true
         }
     }
 }
