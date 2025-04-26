@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.vozmediano.f1trivia.databinding.ActivityMainMenuBinding
 import com.vozmediano.f1trivia.ui.game.GameActivity
+import com.vozmediano.f1trivia.ui.leaderboard.LeaderboardActivity
 import com.vozmediano.f1trivia.ui.login.LoginActivity
 import com.vozmediano.f1trivia.ui.settings.SettingsActivity
 
@@ -44,35 +45,14 @@ class MainMenuActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        Log.i("MainMenuActivity", "onCreate called")
+        binding.btnLeaderboard.setOnClickListener {
+            val intent = Intent(this, LeaderboardActivity::class.java)
+            startActivity(intent)
+        }
+
         checkLoginStatus() // Initial check when the activity is created
     }
 
-    override fun onStart() {
-        super.onStart()
-        Log.i("MainMenuActivity", "onStart called")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.i("MainMenuActivity", "onResume called")
-        checkLoginStatus() // Re-check login status every time the activity resumes
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.i("MainMenuActivity", "onPause called")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.i("MainMenuActivity", "onStop called")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.i("MainMenuActivity", "onDestroy called")
-    }
 
     private fun checkLoginStatus() {
         val currentUser = auth.currentUser
