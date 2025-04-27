@@ -4,6 +4,20 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FFFF0000</color>
     <color name="green">#FF00FF00</color>
-    <color name="purple_500">#673AB7</color>
-    <color name="purple_700">#9C27B0</color>
+
+
+    <color name="background">#F4F8FA</color>
+    <color name="backgroundVariant">#E8F0F2</color>
+    <color name="onBackground">#212121</color>
+    <color name="onBackgroundSecondary">#424242</color>
+
+    <color name="surface">#FFFFFF</color>
+    <color name="surfaceVariant">#F0F0F0</color>
+    <color name="onSurface">#212121</color>
+    <color name="onSurfaceSecondary">#616161</color>
+
+    <color name="error">#B00020</color>
+    <color name="errorVariant">#D32F2F</color>
+    <color name="onError">#FFFFFF</color>
+    <color name="onErrorBackground">#FDE7E9</color>
 </resources>
