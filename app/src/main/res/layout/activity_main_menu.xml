@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.mainmenu.MainMenuActivity">
 
-
     <TextView
         android:id="@+id/et_login"
         android:layout_width="wrap_content"
@@ -21,21 +20,18 @@
         android:textStyle="bold"
         />
 
-
-
-
     <ImageButton
         android:id="@+id/btn_settings"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginTop="200dp"
         android:layout_marginEnd="40dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/gear_logo"
-        android:scaleType="centerCrop"
         android:adjustViewBounds="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/settings"
         android:padding="16dp"
-
+        android:scaleType="centerCrop"
+        android:src="@drawable/gear_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Settings" />
@@ -46,11 +42,12 @@
         android:layout_height="150dp"
         android:layout_marginStart="40dp"
         android:layout_marginTop="200dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/trophy_logo"
-        android:scaleType="centerCrop"
         android:adjustViewBounds="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/leaderboard"
         android:padding="16dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/trophy_logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -64,6 +61,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="150dp"
         tools:text="Play" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
