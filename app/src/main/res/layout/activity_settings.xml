@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsActivity">
+    tools:context=".ui.settings.SettingsActivity">
 
     <Button
         android:id="@+id/btn_refresh_data"
@@ -52,6 +52,14 @@
         android:text="Change Username"
         />
 
+    <Button
+        android:id="@+id/btn_fake_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create fake score"
+        tools:layout_editor_absoluteX="214dp"
+        tools:layout_editor_absoluteY="63dp"
+        tools:ignore="MissingConstraints" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

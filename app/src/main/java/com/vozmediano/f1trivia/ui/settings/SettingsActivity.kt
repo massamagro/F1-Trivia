@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
@@ -47,7 +48,9 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        updateLoginButtonState() // Initial state of the button
+        updateLoginButtonState()
+
+        updateFakeScoreButtonState()
 
         binding.btnLogin.setOnClickListener {
             val currentUser = auth.currentUser
@@ -84,6 +87,21 @@ class SettingsActivity : AppCompatActivity() {
             val intent = Intent(this, ChangeUsernameActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun updateFakeScoreButtonState() {
+        if(auth.currentUser?.uid == "r3Zsu3nYMKezNF6zvdWoekGiSBz2"){
+            binding.btnFakeScore.setOnClickListener{
+                com.vozmediano.f1trivia.util.main()
+            }
+            binding.btnFakeScore.isVisible = true
+            binding.btnFakeScore.isEnabled = true
+        }
+        else {
+            binding.btnFakeScore.isEnabled = false
+            binding.btnFakeScore.isVisible = false
+        }
+
     }
 
     private fun updateLoginButtonState() {

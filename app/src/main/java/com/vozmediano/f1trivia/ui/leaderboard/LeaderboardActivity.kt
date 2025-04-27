@@ -1,5 +1,6 @@
 package com.vozmediano.f1trivia.ui.leaderboard
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,6 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.vozmediano.f1trivia.databinding.ActivityLeaderboardBinding
 import com.vozmediano.f1trivia.domain.model.quiz.ScoreboardEntry
+import com.vozmediano.f1trivia.ui.login.LoginActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -79,7 +81,7 @@ class LeaderboardActivity : AppCompatActivity() {
                     val bestScore = snapshot.documents.first().getLong("score")
                     binding.tvUserBestScore.text = bestScore.toString()
                 } else {
-                    binding.tvUserBestScore.text = "N/A"
+                    binding.tvUserBestScore.text = "0"
                 }
             } catch (e: Exception) {
                 Log.e("LeaderboardActivity", "Error loading user best score: ${e.message}")
@@ -87,6 +89,10 @@ class LeaderboardActivity : AppCompatActivity() {
             }
         } else {
             binding.tvUserBestScore.text = "Log In" // Or handle unauthenticated state
+            binding.tvUserBestScore.setOnClickListener {
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 
@@ -116,17 +122,24 @@ class LeaderboardActivity : AppCompatActivity() {
     }
 
     private suspend fun loadTopMonthlyScores() {
-        try {
-            val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Madrid")) // Adjust timezone if needed
-            calendar.set(Calendar.DAY_OF_MONTH, 1)
-            calendar.set(Calendar.HOUR_OF_DAY, 0)
-            calendar.set(Calendar.MINUTE, 0)
-            calendar.set(Calendar.SECOND, 0)
-            calendar.set(Calendar.MILLISECOND, 0)
-            val startOfMonthTimestamp = calendar.timeInMillis
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Madrid")) // Adjust timezone if needed
+        val currentYear = calendar.get(Calendar.YEAR)
+        val currentMonth = calendar.get(Calendar.MONTH) // Month is 0-indexed
 
+        val calendarStart = Calendar.getInstance(TimeZone.getTimeZone("Europe/Madrid"))
+        calendarStart.set(currentYear, currentMonth, 1, 0, 0, 0)
+        calendarStart.set(Calendar.MILLISECOND, 0)
+        val startOfMonthTimestamp = calendarStart.timeInMillis
+
+        val calendarEnd = Calendar.getInstance(TimeZone.getTimeZone("Europe/Madrid"))
+        calendarEnd.set(currentYear, currentMonth, calendarStart.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59)
+        calendarEnd.set(Calendar.MILLISECOND, 999)
+        val endOfMonthTimestamp = calendarEnd.timeInMillis
+
+        try {
             val snapshot = firestore.collection("scores")
                 .whereGreaterThanOrEqualTo("timestamp", startOfMonthTimestamp)
+                .whereLessThanOrEqualTo("timestamp", endOfMonthTimestamp)
                 .orderBy("score", Query.Direction.DESCENDING)
                 .limit(10)
                 .get()
@@ -144,7 +157,7 @@ class LeaderboardActivity : AppCompatActivity() {
             }
             binding.rvLeaderboard.adapter = ScoreboardAdapter(scoresList)
         } catch (e: Exception) {
-            Log.e("LeaderboardActivity", "Error loading monthly scores: ${e.message}")
+            Log.e("LeaderboardActivity", "Error loading current monthly scores: ${e.message}")
             binding.rvLeaderboard.adapter = ScoreboardAdapter(emptyList())
         }
     }
