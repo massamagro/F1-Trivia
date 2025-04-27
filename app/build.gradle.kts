@@ -96,5 +96,8 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-common-ktx")
+
+    //grid layout
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
 }
 

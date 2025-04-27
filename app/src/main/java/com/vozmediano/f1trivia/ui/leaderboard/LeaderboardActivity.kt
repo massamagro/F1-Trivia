@@ -40,14 +40,14 @@ class LeaderboardActivity : AppCompatActivity() {
     }
 
     private fun setupLeaderboardTypeSpinner() {
-        val leaderboardTypes = arrayOf("All-Time", "Monthly")
+        val leaderboardTypes = arrayOf("All-Time", "This month")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, leaderboardTypes)
         binding.spinnerLeaderboardType.adapter = adapter
 
         binding.spinnerLeaderboardType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedType = leaderboardTypes[position]
-                binding.tvLeaderboardTitle.text = "Top 10 $selectedType Scores:"
+                //binding.tvLeaderboardTitle.text = "Top 10 $selectedType Scores:"
                 loadLeaderboardData(selectedType)
             }
 
@@ -61,7 +61,7 @@ class LeaderboardActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             when (leaderboardType) {
                 "All-Time" -> loadTopAllTimeScores()
-                "Monthly" -> loadTopMonthlyScores()
+                "This month" -> loadTopThisMonthScores()
             }
         }
     }
@@ -121,7 +121,7 @@ class LeaderboardActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun loadTopMonthlyScores() {
+    private suspend fun loadTopThisMonthScores() {
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Madrid"))
         val currentYear = calendar.get(Calendar.YEAR)
         val currentMonth = calendar.get(Calendar.MONTH)
@@ -157,7 +157,7 @@ class LeaderboardActivity : AppCompatActivity() {
             }
             binding.rvLeaderboard.adapter = ScoreboardAdapter(scoresList)
         } catch (e: Exception) {
-            Log.e("LeaderboardActivity", "Error loading current monthly scores: ${e.message}")
+            Log.e("LeaderboardActivity", "Error loading current this month scores: ${e.message}")
             binding.rvLeaderboard.adapter = ScoreboardAdapter(emptyList())
         }
     }

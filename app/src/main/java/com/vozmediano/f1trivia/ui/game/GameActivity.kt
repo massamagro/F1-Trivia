@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -36,6 +37,7 @@ class GameActivity : AppCompatActivity() {
             binding.tvOptionThree,
             binding.tvOptionFour
         )
+        binding.tvPointsValue.text = "0"
 
         setupClickListeners()
         observeQuestions()
@@ -55,10 +57,17 @@ class GameActivity : AppCompatActivity() {
             viewModel.question.collectLatest { question ->
                 question?.let {
                     Log.d("MainActivity", "Question: ${it.title}")
-                    Glide
-                        .with(binding.ivQuestion.context)
-                        .load("https:${it.image}")
-                        .into(binding.ivQuestion)
+                    if (it.image != "") {
+                        binding.cvImageContainer.isVisible = true
+                        binding.cvImageContainer.isEnabled = true
+                        Glide
+                            .with(binding.ivQuestion.context)
+                            .load("https:${it.image}")
+                            .into(binding.ivQuestion)
+                    } else {
+                        binding.cvImageContainer.isVisible = false
+                        binding.cvImageContainer.isEnabled = false
+                    }
                     binding.tvQuestion.text = it.title
                     currentOptions = it.options
                     resetButtons(optionsTv)
@@ -99,17 +108,22 @@ class GameActivity : AppCompatActivity() {
 
 
         if (isCorrect) {
-            //binding.tvPointsValue.text = (binding.tvPointsValue.text.toString().toInt() + 1).toString()
-            (binding.tvPointsValue.text.toString().toInt() + 1).toString()
-                .also { binding.tvPointsValue.text = it }
+            val currentPointsText = binding.tvPointsValue.text.toString()
+            if (currentPointsText.isNotEmpty()) {
+                (currentPointsText.toInt() + 1).toString()
+                    .also { binding.tvPointsValue.text = it }
+            } else {
+                binding.tvPointsValue.text = "1" // Handle the case where it's unexpectedly empty
+            }
             lifecycleScope.launch {
                 generateQuestion()
             }
         } else {
-            val score = binding.tvPointsValue.text.toString().toInt()
+            val score = binding.tvPointsValue.text.toString().toIntOrNull()
+                ?: 0 // Use toIntOrNull for safety
             //binding.tvPointsValue.text = "0"
 
-            if(isUserLoggedIn()) saveScore(score)
+            if (isUserLoggedIn()) saveScore(score)
 
             AlertDialog.Builder(this)
                 .setTitle("Game over")
@@ -144,7 +158,7 @@ class GameActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Log.e("GameActivity", "Error saving score: ${e.message}")
             }
-        }
+    }
 
     private fun resetButtons(buttons: List<TextView>) {
         buttons.forEach { button ->
