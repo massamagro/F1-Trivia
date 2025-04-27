@@ -5,61 +5,47 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".ui.settings.SettingsActivity">
 
     <Button
-        android:id="@+id/btn_refresh_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Refresh Data"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:backgroundTint="@color/black"
-        android:textColor="@android:color/white"
-        android:padding="16dp"
-        android:textSize="18sp"
-        android:fontFamily="sans-serif-medium"
-        android:drawablePadding="8dp"
-        android:drawableTint="@android:color/white"
-        android:drawableTintMode="src_in"
-        />
-
-    <Button
         android:id="@+id/btn_login"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:text="Login"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btn_refresh_data"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="Login"
-        />
+        android:layout_marginTop="16dp" />
 
     <Button
         android:id="@+id/btn_change_username"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="200dp"
+        android:text="Change Username"
+        app:layout_constraintTop_toBottomOf="@id/btn_login"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="Change Username"
-        />
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/btn_refresh_data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Refresh Data"
+        app:layout_constraintTop_toBottomOf="@id/btn_change_username"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
 
     <Button
         android:id="@+id/btn_fake_score"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Create fake score"
-        tools:layout_editor_absoluteX="214dp"
-        tools:layout_editor_absoluteY="63dp"
-        tools:ignore="MissingConstraints" />
-
+        app:layout_constraintTop_toBottomOf="@id/btn_refresh_data"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
