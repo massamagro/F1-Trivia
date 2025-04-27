@@ -34,6 +34,7 @@
         android:src="@drawable/gear_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_leaderboard"
         tools:text="Settings" />
 
     <ImageButton
@@ -49,16 +50,20 @@
         android:scaleType="centerCrop"
         android:src="@drawable/trophy_logo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_settings"
+        />
 
     <Button
         android:id="@+id/btn_play"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="100dp"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
-        android:text="Play"
+        android:text="@string/play"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/btn_leaderboard"
+        app:layout_constraintEnd_toEndOf="@id/btn_settings"
         android:layout_marginBottom="150dp"
         tools:text="Play" />
 

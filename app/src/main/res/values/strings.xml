@@ -4,4 +4,5 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="settings">settings</string>
     <string name="leaderboard">leaderboard</string>
+    <string name="play">Play</string>
 </resources>
