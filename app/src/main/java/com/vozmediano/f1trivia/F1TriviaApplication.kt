@@ -30,7 +30,7 @@ class F1TriviaApplication : Application() {
     lateinit var f1RaceRepository: F1RaceRepositoryImpl
     lateinit var f1ResultRepository: F1ResultRepositoryImpl
     lateinit var wikiRepository: WikiRepository
-    lateinit var firestore: FirebaseFirestore
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate() {
         super.onCreate()

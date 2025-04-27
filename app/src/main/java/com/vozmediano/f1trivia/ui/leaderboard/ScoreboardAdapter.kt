@@ -9,7 +9,7 @@ import com.vozmediano.f1trivia.domain.model.quiz.ScoreboardEntry
 class ScoreboardAdapter(private val scores: List<ScoreboardEntry>) :
     RecyclerView.Adapter<ScoreboardAdapter.ScoreViewHolder>() {
 
-    inner class ScoreViewHolder(val binding: ItemScoreBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ScoreViewHolder(private val binding: ItemScoreBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(entry: ScoreboardEntry, position: Int) {
             binding.tvRank.text = "${position + 1}."
             binding.tvUsername.text = entry.username

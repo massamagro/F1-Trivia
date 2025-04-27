@@ -14,7 +14,7 @@ import com.vozmediano.f1trivia.util.isValidUsername
 
 class UsernameActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityUsernameBinding
+    private lateinit var binding: ActivityUsernameBinding
     private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {

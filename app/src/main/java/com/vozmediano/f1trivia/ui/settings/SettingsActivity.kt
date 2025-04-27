@@ -18,7 +18,7 @@ import com.vozmediano.f1trivia.ui.login.LoginActivity
 
 class SettingsActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivitySettingsBinding
+    private lateinit var binding: ActivitySettingsBinding
     private val viewModel: SettingsViewModel by viewModels { SettingsViewModel.Factory }
     private val auth = FirebaseAuth.getInstance()
     private lateinit var loginLauncher: androidx.activity.result.ActivityResultLauncher<Intent>
