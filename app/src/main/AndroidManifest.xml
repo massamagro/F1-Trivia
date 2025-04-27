@@ -28,8 +28,7 @@
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="false"
-            android:label="@string/title_activity_login"
-            android:theme="@style/Theme.F1Trivia" />
+            android:label="@string/title_activity_login" />
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:exported="false" />
