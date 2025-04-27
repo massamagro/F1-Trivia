@@ -4,12 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -29,13 +26,7 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         loginLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -68,7 +59,8 @@ class SettingsActivity : AppCompatActivity() {
                     this,
                     GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
                 ).signOut().addOnCompleteListener {
-                    updateLoginButtonState() // Update button after logout
+                    updateLoginButtonState()
+                    updateFakeScoreButtonState()
                     Snackbar.make(binding.root, "Logged out successfully", Snackbar.LENGTH_SHORT).show()
                 }
             }
@@ -109,9 +101,11 @@ class SettingsActivity : AppCompatActivity() {
         if (currentUser == null) {
             binding.btnLogin.text = "Login"
             binding.btnChangeUsername.isEnabled = false
+            binding.btnChangeUsername.isVisible = false
         } else {
             binding.btnLogin.text = "Logout"
             binding.btnChangeUsername.isEnabled = true
+            binding.btnChangeUsername.isVisible = true
         }
     }
 }

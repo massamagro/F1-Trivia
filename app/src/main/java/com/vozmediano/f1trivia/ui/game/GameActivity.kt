@@ -3,12 +3,9 @@ package com.vozmediano.f1trivia.ui.game
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -52,7 +49,6 @@ class GameActivity : AppCompatActivity() {
             }
         }
     }
-
 
     private fun observeQuestions() {
         lifecycleScope.launch {

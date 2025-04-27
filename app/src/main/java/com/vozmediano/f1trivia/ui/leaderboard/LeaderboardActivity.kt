@@ -122,9 +122,9 @@ class LeaderboardActivity : AppCompatActivity() {
     }
 
     private suspend fun loadTopMonthlyScores() {
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Madrid")) // Adjust timezone if needed
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Madrid"))
         val currentYear = calendar.get(Calendar.YEAR)
-        val currentMonth = calendar.get(Calendar.MONTH) // Month is 0-indexed
+        val currentMonth = calendar.get(Calendar.MONTH)
 
         val calendarStart = Calendar.getInstance(TimeZone.getTimeZone("Europe/Madrid"))
         calendarStart.set(currentYear, currentMonth, 1, 0, 0, 0)
