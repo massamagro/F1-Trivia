@@ -8,13 +8,14 @@
     android:padding="24dp"
     android:background="@color/background"
     tools:context=".ui.leaderboard.LeaderboardActivity"
+    android:layout_marginTop="36dp"
     >
 
     <TextView
         style="@style/TextAppearance.MaterialComponents.Headline5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Scoreboard"
+        android:text="Leaderboard"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="24dp"
         android:textColor="@color/onBackground"

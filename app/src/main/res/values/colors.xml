@@ -5,19 +5,19 @@
     <color name="red">#FFFF0000</color>
     <color name="green">#FF00FF00</color>
 
+    <color name="background">#E3F2FD</color> <!-- soft light blue -->
+    <color name="backgroundVariant">#BBDEFB</color> <!-- a bit stronger light blue -->
+    <color name="onBackground">#000000</color> <!-- pure black for text -->
+    <color name="onBackgroundSecondary">#424242</color> <!-- dark gray for secondary text -->
 
-    <color name="background">#F4F8FA</color>
-    <color name="backgroundVariant">#E8F0F2</color>
-    <color name="onBackground">#212121</color>
-    <color name="onBackgroundSecondary">#424242</color>
+    <color name="surface">#FFFFFF</color> <!-- pure white surfaces -->
+    <color name="surfaceVariant">#F5F5F5</color> <!-- very soft gray variant -->
+    <color name="onSurface">#000000</color> <!-- black text on surfaces -->
+    <color name="onSurfaceSecondary">#616161</color> <!-- medium dark gray for secondary surface text -->
 
-    <color name="surface">#FFFFFF</color>
-    <color name="surfaceVariant">#F0F0F0</color>
-    <color name="onSurface">#212121</color>
-    <color name="onSurfaceSecondary">#616161</color>
+    <color name="error">#D32F2F</color> <!-- vivid but elegant red -->
+    <color name="errorVariant">#FFCDD2</color> <!-- soft pink variant -->
+    <color name="onError">#FFFFFF</color> <!-- white text on error surfaces -->
+    <color name="onErrorBackground">#FFEBEE</color> <!-- super light pink background -->
 
-    <color name="error">#B00020</color>
-    <color name="errorVariant">#D32F2F</color>
-    <color name="onError">#FFFFFF</color>
-    <color name="onErrorBackground">#FDE7E9</color>
 </resources>

@@ -25,26 +25,66 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_image_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
         android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/gl_lives"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_question"
-        app:layout_constraintBottom_toTopOf="@id/gl_options"
-        app:layout_constraintDimensionRatio="16:9"
-        >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5">
 
         <ImageView
             android:id="@+id/iv_question"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerInside"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
             tools:ignore="ContentDescription"
             tools:src="@drawable/ic_launcher_foreground" />
     </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/gl_lives"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginEnd="72dp"
+        app:layout_constraintBottom_toTopOf="@id/gl_options"
+
+        >
+
+        <ImageView
+            android:id="@+id/iv_life_one"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iv_life_two"
+            android:src="@drawable/red_heart_logo"
+            tools:src="@drawable/red_heart_logo" />
+        <ImageView
+            android:id="@+id/iv_life_two"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            app:layout_constraintStart_toEndOf="@id/iv_life_one"
+            app:layout_constraintEnd_toStartOf="@id/iv_life_three"
+            android:src="@drawable/red_heart_logo"
+            tools:src="@drawable/red_heart_logo" />
+        <ImageView
+            android:id="@+id/iv_life_three"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toEndOf="@id/iv_life_two"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="8dp"
+            android:src="@drawable/red_heart_logo"
+            tools:src="@drawable/red_heart_logo" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.gridlayout.widget.GridLayout
         android:id="@+id/gl_options"
