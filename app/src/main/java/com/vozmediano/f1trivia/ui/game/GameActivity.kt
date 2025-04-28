@@ -2,6 +2,7 @@ package com.vozmediano.f1trivia.ui.game
 
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -25,6 +26,8 @@ class GameActivity : AppCompatActivity() {
     private var currentOptions: List<Option> = emptyList()
     private val viewModel: GameViewModel by viewModels { GameViewModel.Factory }
 
+    private var lives = 3
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityGameBinding.inflate(layoutInflater)
@@ -38,6 +41,7 @@ class GameActivity : AppCompatActivity() {
             binding.tvOptionFour
         )
         binding.tvPointsValue.text = "0"
+        var lives = 3
 
         setupClickListeners()
         observeQuestions()
@@ -57,17 +61,7 @@ class GameActivity : AppCompatActivity() {
             viewModel.question.collectLatest { question ->
                 question?.let {
                     Log.d("MainActivity", "Question: ${it.title}")
-                    if (it.image != "") {
-                        binding.cvImageContainer.isVisible = true
-                        binding.cvImageContainer.isEnabled = true
-                        Glide
-                            .with(binding.ivQuestion.context)
-                            .load("https:${it.image}")
-                            .into(binding.ivQuestion)
-                    } else {
-                        binding.cvImageContainer.isVisible = false
-                        binding.cvImageContainer.isEnabled = false
-                    }
+                    loadImage(it.image)
                     binding.tvQuestion.text = it.title
                     currentOptions = it.options
                     resetButtons(optionsTv)
@@ -76,6 +70,21 @@ class GameActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun loadImage(image: String?) {
+        if (image != "") {
+            binding.cvImageContainer.isVisible = true
+            binding.cvImageContainer.isEnabled = true
+
+            Glide
+                .with(this)
+                .load("https:${image}")
+                .into(binding.ivQuestion)
+        } else {
+            binding.cvImageContainer.isVisible = false
+            binding.cvImageContainer.isEnabled = false
         }
     }
 
@@ -119,20 +128,32 @@ class GameActivity : AppCompatActivity() {
                 generateQuestion()
             }
         } else {
-            val score = binding.tvPointsValue.text.toString().toIntOrNull()
-                ?: 0 // Use toIntOrNull for safety
-            //binding.tvPointsValue.text = "0"
-
-            if (isUserLoggedIn()) saveScore(score)
-
-            AlertDialog.Builder(this)
-                .setTitle("Game over")
-                .setMessage("Score: $score")
-                .setPositiveButton("OK") { _, _ ->
-                    onBackPressedDispatcher.onBackPressed()
+            when (lives) {
+                3 -> binding.ivLifeThree.setImageResource(R.drawable.black_heart_logo)
+                2 -> binding.ivLifeTwo.setImageResource(R.drawable.black_heart_logo)
+                1 -> binding.ivLifeOne.setImageResource(R.drawable.black_heart_logo)
+            }
+            lives--
+            if (lives == 0) {
+                endGame()
+            } else {
+                lifecycleScope.launch {
+                    generateQuestion()
                 }
-                .show()
+            }
         }
+    }
+
+    private fun endGame() {
+        val score = binding.tvPointsValue.text.toString().toIntOrNull() ?: 0
+        if (isUserLoggedIn()) saveScore(score)
+        AlertDialog.Builder(this)
+            .setTitle("Game over")
+            .setMessage("Score: $score")
+            .setPositiveButton("OK") { _, _ ->
+                finish()
+            }
+            .show()
     }
 
     private fun isUserLoggedIn(): Boolean {
