@@ -44,7 +44,12 @@ class MainMenuActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        checkLoginStatus() // Initial check when the activity is created
+        checkLoginStatus()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkLoginStatus()
     }
 
 
