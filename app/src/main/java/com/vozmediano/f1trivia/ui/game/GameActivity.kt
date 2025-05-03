@@ -2,7 +2,6 @@ package com.vozmediano.f1trivia.ui.game
 
 import android.os.Bundle
 import android.util.Log
-import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -15,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.vozmediano.f1trivia.R
 import com.vozmediano.f1trivia.databinding.ActivityGameBinding
 import com.vozmediano.f1trivia.domain.model.quiz.Option
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -22,12 +22,9 @@ class GameActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityGameBinding
     private lateinit var optionsTv: List<TextView>
-
     private var currentOptions: List<Option> = emptyList()
     private val viewModel: GameViewModel by viewModels { GameViewModel.Factory }
-
     private var lives = 3
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityGameBinding.inflate(layoutInflater)
@@ -41,11 +38,11 @@ class GameActivity : AppCompatActivity() {
             binding.tvOptionFour
         )
         binding.tvPointsValue.text = "0"
-        var lives = 3
 
         setupClickListeners()
         observeQuestions()
-        generateQuestion()
+        observeLoadingState()
+        generateQuestion() // opening question
     }
 
     private fun setupClickListeners() {
@@ -60,7 +57,7 @@ class GameActivity : AppCompatActivity() {
         lifecycleScope.launch {
             viewModel.question.collectLatest { question ->
                 question?.let {
-                    Log.d("MainActivity", "Question: ${it.title}")
+                    Log.d("GameActivity", "Question: ${it.title}")
                     loadImage(it.image)
                     binding.tvQuestion.text = it.title
                     currentOptions = it.options
@@ -73,11 +70,22 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    private fun observeLoadingState() {
+        lifecycleScope.launch {
+            viewModel.isLoading.collectLatest { loading ->
+                binding.progressBar.isVisible = loading
+                binding.tvQuestion.isVisible = !loading
+                binding.cvImageContainer.isVisible = !loading
+                binding.glLives.isVisible = !loading
+                binding.glOptions.isVisible = !loading
+            }
+        }
+    }
+
     private fun loadImage(image: String?) {
-        if (image != "") {
+        if (!image.isNullOrEmpty()) {
             binding.cvImageContainer.isVisible = true
             binding.cvImageContainer.isEnabled = true
-
             Glide
                 .with(this)
                 .load("https:${image}")
@@ -97,8 +105,8 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    //LISTENERS
     private fun checkAnswer(selectedIndex: Int) {
+        optionsTv.forEach { it.isEnabled = false }
         val isCorrect = currentOptions[selectedIndex].isCorrect
         optionsTv[selectedIndex].setBackgroundColor(
             if (isCorrect) {
@@ -112,32 +120,29 @@ class GameActivity : AppCompatActivity() {
             if (option.isCorrect) {
                 binding.tvQuestion.text = option.longText
             }
-            optionsTv[index].isEnabled = false
         }
 
-
-        if (isCorrect) {
-            val currentPointsText = binding.tvPointsValue.text.toString()
-            if (currentPointsText.isNotEmpty()) {
-                (currentPointsText.toInt() + 1).toString()
-                    .also { binding.tvPointsValue.text = it }
-            } else {
-                binding.tvPointsValue.text = "1" // Handle the case where it's unexpectedly empty
-            }
-            lifecycleScope.launch {
+        lifecycleScope.launch {
+            delay(1000) //delay to show correct answer explanation
+            if (isCorrect) {
+                val currentPointsText = binding.tvPointsValue.text.toString()
+                val newPoints = if (currentPointsText.isNotEmpty()) {
+                    currentPointsText.toInt() + 1
+                } else {
+                    1
+                }
+                binding.tvPointsValue.text = newPoints.toString()
                 generateQuestion()
-            }
-        } else {
-            when (lives) {
-                3 -> binding.ivLifeThree.setImageResource(R.drawable.black_heart_logo)
-                2 -> binding.ivLifeTwo.setImageResource(R.drawable.black_heart_logo)
-                1 -> binding.ivLifeOne.setImageResource(R.drawable.black_heart_logo)
-            }
-            lives--
-            if (lives == 0) {
-                endGame()
             } else {
-                lifecycleScope.launch {
+                when (lives) {
+                    3 -> binding.ivLifeThree.setImageResource(R.drawable.black_heart_logo)
+                    2 -> binding.ivLifeTwo.setImageResource(R.drawable.black_heart_logo)
+                    1 -> binding.ivLifeOne.setImageResource(R.drawable.black_heart_logo)
+                }
+                lives--
+                if (lives == 0) {
+                    endGame()
+                } else {
                     generateQuestion()
                 }
             }
@@ -157,28 +162,17 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun isUserLoggedIn(): Boolean {
-        Log.i("GameActivity", "(isUserLoggedIn) Checking login status")
         val currentUser = FirebaseAuth.getInstance().currentUser
-        Log.i("GameActivity", "(isUserLoggedIn) Current user: $currentUser")
         return currentUser != null
     }
 
     private fun saveScore(score: Int) {
-        Log.i("GameActivity", "Saving score: $score")
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         val scoreRef = FirebaseFirestore.getInstance().collection("scores")
-        val scoreMap = mapOf(
-            "uid" to uid,
-            "score" to score,
-            "timestamp" to System.currentTimeMillis()
-        )
+        val scoreMap = mapOf("uid" to uid, "score" to score, "timestamp" to System.currentTimeMillis())
         scoreRef.add(scoreMap)
-            .addOnSuccessListener {
-                Log.i("GameActivity", "Score saved successfully!")
-            }
-            .addOnFailureListener { e ->
-                Log.e("GameActivity", "Error saving score: ${e.message}")
-            }
+            .addOnSuccessListener { Log.i("GameActivity", "Score saved successfully!") }
+            .addOnFailureListener { e -> Log.e("GameActivity", "Error saving score: ${e.message}") }
     }
 
     private fun resetButtons(buttons: List<TextView>) {

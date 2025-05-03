@@ -12,6 +12,7 @@ import com.vozmediano.f1trivia.domain.model.usecase.DriverByNationalityUseCase
 import com.vozmediano.f1trivia.domain.model.usecase.MostPodiumsByCircuitUseCase
 import com.vozmediano.f1trivia.domain.model.usecase.MostWinsByCircuitUseCase
 import com.vozmediano.f1trivia.domain.model.usecase.WhoWonAtCircuitAndSeasonUseCase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,32 +28,34 @@ class GameViewModel(
     private val _question = MutableStateFlow<Question?>(null)
     val question: StateFlow<Question?> = _question.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
     //QUESTIONS
     fun fetchQuestionDriverBySeasonAndCircuitAndPosition() {
-        Log.i("MainViewModel", "Question: whoWonAtCircuitAndSeason")
-        viewModelScope.launch{
-            _question.value = whoWonAtCircuitAndSeasonUseCase()
-        }
+        fetchQuestion { whoWonAtCircuitAndSeasonUseCase() }
     }
 
-    fun fetchQuestionDriverByNationality(){
-        Log.i("MainViewModel", "Question: driverByNationality")
-        viewModelScope.launch {
-            _question.value = driverByNationalityUseCase()
-        }
+    fun fetchQuestionDriverByNationality() {
+        fetchQuestion { driverByNationalityUseCase() }
     }
 
     fun fetchQuestionDriverByWinsAtCircuit() {
-        Log.i("MainViewModel", "Question: mostWinsByCircuit")
-        viewModelScope.launch {
-            _question.value = mostWinsByCircuitUseCase()
-        }
+        fetchQuestion { mostWinsByCircuitUseCase() }
     }
 
     fun fetchQuestionDriverByPodiumsAtCircuit() {
-        Log.i("MainViewModel", "Question: mostPodiumsByCircuit")
+        fetchQuestion { mostPodiumsByCircuitUseCase() }
+    }
+
+    private fun fetchQuestion(questionFetcher: suspend () -> Question?) {
+        Log.i("GameViewModel", "Fetching new question...")
+        _isLoading.value = true
         viewModelScope.launch {
-            _question.value = mostPodiumsByCircuitUseCase()
+            delay(2000) // Simulate a minimum loading time within the ViewModel
+            _question.value = questionFetcher()
+            _isLoading.value = false
+            Log.i("GameViewModel", "Question fetched.")
         }
     }
 

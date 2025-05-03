@@ -9,6 +9,17 @@
     android:padding="24dp"
     tools:context="ui.game.GameActivity">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/TextAppearance.Material3.HeadlineLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <TextView
         android:id="@+id/tv_question"
         style="@style/TextAppearance.MaterialComponents.Headline6"
@@ -20,8 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/cv_image_container"
-        />
+        app:layout_constraintBottom_toTopOf="@id/cv_image_container" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_image_container"
@@ -51,9 +61,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="72dp"
         android:layout_marginEnd="72dp"
-        app:layout_constraintBottom_toTopOf="@id/gl_options"
-
-        >
+        app:layout_constraintBottom_toTopOf="@id/gl_options">
 
         <ImageView
             android:id="@+id/iv_life_one"
@@ -64,6 +72,7 @@
             app:layout_constraintEnd_toStartOf="@id/iv_life_two"
             android:src="@drawable/red_heart_logo"
             tools:src="@drawable/red_heart_logo" />
+
         <ImageView
             android:id="@+id/iv_life_two"
             android:layout_width="wrap_content"
@@ -73,6 +82,7 @@
             app:layout_constraintEnd_toStartOf="@id/iv_life_three"
             android:src="@drawable/red_heart_logo"
             tools:src="@drawable/red_heart_logo" />
+
         <ImageView
             android:id="@+id/iv_life_three"
             android:layout_width="wrap_content"
@@ -82,7 +92,6 @@
             android:layout_margin="8dp"
             android:src="@drawable/red_heart_logo"
             tools:src="@drawable/red_heart_logo" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -95,8 +104,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/cv_points"
-        android:layout_marginBottom="36dp"
-        >
+        android:layout_marginBottom="36dp">
 
         <TextView
             android:id="@+id/tv_option_one"
