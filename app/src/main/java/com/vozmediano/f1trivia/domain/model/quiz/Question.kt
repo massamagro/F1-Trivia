@@ -10,7 +10,7 @@ class Question(
         options.forEach{
             str += "${it.shortText}\n"
         }
-        str += "$image"
+        str += "image: $image"
         return str
     }
 }

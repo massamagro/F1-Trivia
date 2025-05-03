@@ -57,7 +57,7 @@ class GameActivity : AppCompatActivity() {
         lifecycleScope.launch {
             viewModel.question.collectLatest { question ->
                 question?.let {
-                    Log.d("GameActivity", "Question: ${it.title}")
+                    Log.d("GameActivity", "Question: ${it}")
                     loadImage(it.image)
                     binding.tvQuestion.text = it.title
                     currentOptions = it.options
@@ -83,21 +83,22 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun loadImage(image: String?) {
+        Log.i("GameActivity", "(loadImage) imageStr: ${image}")
         if (!image.isNullOrEmpty()) {
             binding.cvImageContainer.isVisible = true
-            binding.cvImageContainer.isEnabled = true
+            //binding.cvImageContainer.isEnabled = true
             Glide
                 .with(this)
                 .load("https:${image}")
                 .into(binding.ivQuestion)
         } else {
             binding.cvImageContainer.isVisible = false
-            binding.cvImageContainer.isEnabled = false
+            binding.cvImageContainer.requestLayout()
         }
     }
 
     private fun generateQuestion() {
-        when ((1..4).random()) {
+        when ((2..2).random()) {
             1 -> viewModel.fetchQuestionDriverBySeasonAndCircuitAndPosition()
             2 -> viewModel.fetchQuestionDriverByNationality()
             3 -> viewModel.fetchQuestionDriverByWinsAtCircuit()
