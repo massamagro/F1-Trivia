@@ -4,10 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.vozmediano.f1trivia.databinding.ActivityMainMenuBinding
@@ -31,9 +29,25 @@ class MainMenuActivity : AppCompatActivity() {
         etLogin = binding.etLogin
 
         binding.btnPlay.setOnClickListener {
-            val intent = Intent(this, GameActivity::class.java)
-            startActivity(intent)
+            val gameIntent = Intent(this, GameActivity::class.java)
+            val loginIntent = Intent(this, LoginActivity::class.java)
+            if (auth.currentUser != null) {
+                startActivity(gameIntent)
+            } else {
+                AlertDialog.Builder(this)
+                    .setTitle("Login Reminder")
+                    .setMessage("Log in to save your score and join leaderboards!")
+                    .setPositiveButton("Login") { _, _ ->
+                        startActivity(loginIntent)
+                    }
+                    .setNegativeButton("Continue") { dialog, _ ->
+                        dialog.dismiss()
+                        startActivity(gameIntent)
+                    }
+                    .show()
+            }
         }
+
         binding.btnSettings.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
@@ -82,12 +96,12 @@ class MainMenuActivity : AppCompatActivity() {
                     Log.i("MainMenuActivity", "(Retrieve username) Username: $username")
                 } else {
                     Log.i("MainMenuActivity", "(Retrieve username) No username found for user: $uid")
-                    etLogin.text = "Not logged in" // Or handle this case differently
+                    etLogin.text = "Not logged in"
                 }
             }
             .addOnFailureListener { e ->
                 Log.e("MainMenuActivity", "(Retrieve username) Error getting username: ", e)
-                etLogin.text = "Not logged in" // Or handle this error differently
+                etLogin.text = "Not logged in"
             }
     }
 }
