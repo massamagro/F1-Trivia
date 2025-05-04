@@ -54,7 +54,7 @@ class WhoWonAtCircuitAndSeasonUseCase(
         val question = Question(
             title = "Who won the $correctRaceName in $correctSeason?",
             options = mutableListOf(),
-            image = imageUrl
+            imageBefore = imageUrl
         )
         val driverSet = mutableSetOf<String>()
 

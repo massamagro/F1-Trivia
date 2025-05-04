@@ -58,7 +58,7 @@ class GameActivity : AppCompatActivity() {
             viewModel.question.collectLatest { question ->
                 question?.let {
                     Log.d("GameActivity", "Question: ${it}")
-                    loadImage(it.image)
+                    loadImage(it.imageBefore)
                     binding.tvQuestion.text = it.title
                     currentOptions = it.options
                     resetButtons(optionsTv)

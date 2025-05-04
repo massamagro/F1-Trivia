@@ -81,7 +81,7 @@ class MostPodiumsByCircuitUseCase(
             question = Question(
                 title = "Who has the most podiums at ${correctCircuit.circuitName}?",
                 options = mutableListOf(),
-                image = imageUrl
+                imageBefore = imageUrl
             )
 
             val driverSet = mutableSetOf<String>()

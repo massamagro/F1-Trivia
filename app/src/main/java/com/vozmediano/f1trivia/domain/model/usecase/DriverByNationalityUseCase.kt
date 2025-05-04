@@ -36,7 +36,7 @@ class DriverByNationalityUseCase(
         val question = Question(
             title = "Which of this drivers is ${correctDriver.nationality}?",
             options = mutableListOf(),
-            image = imageUrl
+            imageBefore = imageUrl
         )
 
         val setNationalities = mutableSetOf<String>()

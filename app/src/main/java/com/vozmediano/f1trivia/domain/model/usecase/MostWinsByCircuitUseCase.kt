@@ -53,7 +53,7 @@ class MostWinsByCircuitUseCase(
             question = Question(
                 title = "Who has the most wins at ${correctCircuit.circuitName}?",
                 options = mutableListOf(),
-                image = imageUrl
+                imageBefore = imageUrl
             )
 
             val driverSet = mutableSetOf<String>()
