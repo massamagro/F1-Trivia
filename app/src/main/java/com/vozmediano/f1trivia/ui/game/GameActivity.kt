@@ -98,7 +98,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun generateQuestion() {
-        when ((2..2).random()) {
+        when ((1..4).random()) {
             1 -> viewModel.fetchQuestionDriverBySeasonAndCircuitAndPosition()
             2 -> viewModel.fetchQuestionDriverByNationality()
             3 -> viewModel.fetchQuestionDriverByWinsAtCircuit()
