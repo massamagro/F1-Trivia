@@ -4,7 +4,8 @@ class Question(
     var title : String,
     var options : MutableList<Option>,
     var imageBefore: String ? = "",
-    var imageAfter: String ? = ""
+    var imageAfter: String ? = "",
+    var imageDescription: String ? = ""
 ){
     override fun toString(): String {
         var str = "$title\n"
